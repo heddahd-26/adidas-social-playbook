@@ -20,15 +20,13 @@
       width:100%;height:100%;max-width:480px;max-height:854px;
       aspect-ratio:9/16;position:absolute;
       display:flex;flex-direction:column;align-items:center;justify-content:center;
-      padding:2.5rem 1.8rem;
-      opacity:0;transform:translateX(120%);
+      padding:2.5rem 1.8rem;opacity:0;transform:translateX(120%);
       transition:all 0.55s cubic-bezier(.22,1,.36,1);
       overflow:hidden;
       background:linear-gradient(180deg,#0a0a0a 0%,#000 100%)
     }
     .slide.active{opacity:1;transform:translateX(0)}
     .slide.prev{opacity:0;transform:translateX(-120%)}
-    .slide.dismiss-left{opacity:0;transform:translateX(-120%)!important}
 
     .light-spot{position:absolute;border-radius:50%;filter:blur(120px);opacity:.25;pointer-events:none}
     .ls1{width:320px;height:320px;background:#3b82f6;top:-120px;right:-100px;animation:float1 22s ease-in-out infinite}
@@ -43,7 +41,6 @@
     .slide-content{position:relative;z-index:10;text-align:center;width:100%;max-height:100%;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
     .slide-content::-webkit-scrollbar{width:3px}
     .slide-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
-
     .section-tag{display:inline-block;font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1);padding:.25rem .75rem;border-radius:20px;margin-bottom:1rem}
     .editable{outline:none;transition:background .2s;border-radius:4px;padding:0 2px}
     .editable:focus{background:rgba(255,255,255,.05);box-shadow:0 0 0 1px rgba(59,130,246,.2);-webkit-user-select:text;user-select:text}
@@ -62,53 +59,84 @@
     /* ── Top Bar ── */
     .top-bar{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;pointer-events:none}
     .top-bar>*{pointer-events:auto}
-    .btn-toc{
-      display:flex;align-items:center;gap:5px;
-      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
-      border-radius:8px;padding:6px 11px;color:rgba(255,255,255,.5);
-      font-size:.7rem;cursor:pointer;transition:all .2s;font-family:inherit
-    }
+    .btn-toc{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 11px;color:rgba(255,255,255,.5);font-size:.7rem;cursor:pointer;transition:all .2s;font-family:inherit}
     .btn-toc:hover{background:rgba(255,255,255,.1);color:#fff}
     .right-group{display:flex;align-items:center;gap:8px}
     .auth-status{font-size:.6rem;color:rgba(255,255,255,.25);padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.04)}
     .auth-status.approved{color:#6ee7b7;background:rgba(16,185,129,.1)}
 
-    .edit-toggle{
-      display:flex;align-items:center;gap:5px;
-      padding:6px 11px;border-radius:8px;
-      border:1px solid rgba(255,255,255,.08);
-      cursor:pointer;transition:all .2s;
-      font-size:.7rem;color:rgba(255,255,255,.4);font-family:inherit;
-      background:rgba(255,255,255,.04)
-    }
+    .edit-toggle{display:flex;align-items:center;gap:5px;padding:6px 11px;border-radius:8px;border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;font-size:.7rem;color:rgba(255,255,255,.4);font-family:inherit;background:rgba(255,255,255,.04)}
     .edit-toggle:hover{background:rgba(255,255,255,.08)}
     .edit-toggle.locked{opacity:.5;cursor:not-allowed}
     .edit-toggle.editable{color:rgba(255,255,255,.7);border-color:rgba(59,130,246,.3)}
     .edit-toggle.editable:hover{border-color:rgba(59,130,246,.5)}
     .edit-toggle.active{border-color:rgba(59,130,246,.4);background:rgba(59,130,246,.1);color:#93c5fd}
-    .edit-hint{
-      position:fixed;top:52px;right:14px;z-index:200;
-      font-size:.6rem;color:rgba(255,255,255,.2);text-align:right;
-      line-height:1.4;opacity:0;transition:opacity .5s;pointer-events:none
-    }
+    .edit-hint{position:fixed;top:52px;right:14px;z-index:200;font-size:.6rem;color:rgba(255,255,255,.2);text-align:right;line-height:1.4;opacity:0;transition:opacity .5s;pointer-events:none}
     .edit-hint.show{opacity:1}
 
-    /* ── Swipe hint ── */
-    .swipe-hint{
-      position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
-      z-index:99;font-size:.55rem;color:rgba(255,255,255,.12);
-      letter-spacing:.1em;pointer-events:none;
-      transition:opacity 1s;opacity:1
+    /* ── Email Verification Overlay ── */
+    .verify-overlay{
+      position:fixed;inset:0;z-index:999;
+      background:#000;
+      display:flex;align-items:center;justify-content:center;
+      transition:opacity .6s,transform .6s;
     }
+    .verify-overlay.hidden{opacity:0;transform:scale(1.05);pointer-events:none}
+    .verify-box{
+      position:relative;z-index:10;text-align:center;
+      max-width:400px;width:90%;padding:2.5rem;
+    }
+    .verify-box h1{
+      font-size:2.2rem;font-weight:900;line-height:1.2;margin-bottom:.5rem;
+    }
+    .verify-box .sub{
+      font-size:.85rem;font-weight:300;color:rgba(255,255,255,.4);
+      margin-bottom:2rem;line-height:1.6;
+    }
+    .verify-input-group{
+      display:flex;flex-direction:column;gap:.75rem;
+    }
+    .verify-input{
+      width:100%;padding:.8rem 1rem;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:12px;color:#fff;font-size:.95rem;
+      font-family:inherit;outline:none;transition:all .3s;
+      text-align:center;
+    }
+    .verify-input:focus{border-color:rgba(59,130,246,.4);background:rgba(255,255,255,.06)}
+    .verify-input::placeholder{color:rgba(255,255,255,.2);font-size:.85rem}
+    .verify-submit{
+      width:100%;padding:.8rem;
+      background:rgba(59,130,246,.15);
+      border:1px solid rgba(59,130,246,.25);
+      border-radius:12px;color:#93c5fd;
+      font-size:.9rem;font-weight:600;cursor:pointer;
+      transition:all .3s;font-family:inherit;
+    }
+    .verify-submit:hover{background:rgba(59,130,246,.25)}
+    .verify-error{
+      font-size:.75rem;color:#fca5a5;margin-top:.5rem;
+      min-height:1.2rem;transition:opacity .3s;
+    }
+    .verify-hint{
+      font-size:.65rem;color:rgba(255,255,255,.15);
+      margin-top:1.5rem;line-height:1.6;
+    }
+    .verify-logout{
+      font-size:.65rem;color:rgba(255,255,255,.15);
+      cursor:pointer;transition:color .2s;margin-top:.5rem;
+      background:none;border:none;font-family:inherit;
+    }
+    .verify-logout:hover{color:rgba(255,255,255,.4)}
 
-    /* ── Modal ── */
+    /* ── Permission Modal ── */
     .modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s}
     .modal-overlay.show{opacity:1;pointer-events:auto}
     .modal-box{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:2rem;max-width:420px;width:90%;max-height:80vh;overflow-y:auto;position:relative}
     .modal-close{position:absolute;top:12px;right:16px;font-size:1.2rem;color:rgba(255,255,255,.3);cursor:pointer;transition:.2s;background:none;border:none;font-family:inherit}
     .modal-close:hover{color:#fff}
     .modal-title{font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;text-align:center}
-
     .toc-list{list-style:none}
     .toc-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .2s;border:1px solid transparent;margin-bottom:4px}
     .toc-item:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.06)}
@@ -118,7 +146,6 @@
     .toc-tag{font-size:.6rem;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,.25);letter-spacing:.05em}
     .toc-title{font-size:.85rem;font-weight:500;margin-top:1px}
     .toc-item.active .toc-title{color:#93c5fd}
-
     .form-group{margin-bottom:1rem}
     .form-label{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem;display:block}
     .form-input{width:100%;padding:.6rem .8rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#fff;font-size:.85rem;font-family:inherit;outline:none;transition:all .2s}
@@ -130,7 +157,6 @@
     .divider{height:1px;background:rgba(255,255,255,.06);margin:1rem 0}
     .admin-link{text-align:center;font-size:.65rem;color:rgba(255,255,255,.2);cursor:pointer;margin-top:.5rem}
     .admin-link:hover{color:rgba(255,255,255,.4)}
-
     .req-item{display:flex;align-items:center;justify-content:space-between;padding:.6rem;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:.4rem}
     .req-info{font-size:.75rem;line-height:1.5}
     .req-name{font-weight:600;color:rgba(255,255,255,.7)}
@@ -146,24 +172,53 @@
     .progress-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .3s}
     .progress-dot.active{background:#fff;transform:scale(1.5)}
     .progress-dot:hover{background:rgba(255,255,255,.5)}
-
     .page-number{position:fixed;bottom:46px;left:50%;transform:translateX(-50%);font-size:.7rem;color:rgba(255,255,255,.25);z-index:100;letter-spacing:.05em}
+    .user-badge{
+      position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:150;
+      font-size:.6rem;color:rgba(255,255,255,.15);
+      background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
+      padding:3px 12px;border-radius:20px;letter-spacing:.03em;
+      pointer-events:none;white-space:nowrap;
+    }
     .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(255,255,255,.08);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);padding:.5rem 1.2rem;border-radius:20px;font-size:.7rem;color:rgba(255,255,255,.6);z-index:600;opacity:0;transition:all .4s cubic-bezier(.22,1,.36,1);white-space:nowrap;pointer-events:none}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
     @media(max-width:520px){
       .slide{padding:1.8rem 1.2rem;max-width:100vw;max-height:100vh}
       .top-bar{padding:6px 10px}
       .btn-toc,.edit-toggle{padding:4px 8px;font-size:.65rem}
       .auth-status{display:none}
-      .swipe-hint{font-size:.5rem}
+      .verify-box{padding:1.8rem}
+      .user-badge{font-size:.5rem;padding:2px 8px}
     }
     @media(min-height:900px){.slide{max-height:800px}}
   </style>
 </head>
 <body>
 
-  <div class="top-bar">
+  <!-- ═══ Email Verification Overlay ═══ -->
+  <div class="verify-overlay" id="verifyOverlay">
+    <div class="light-spot ls1"></div>
+    <div class="light-spot ls2"></div>
+    <div class="light-spot ls3"></div>
+    <div class="verify-box">
+      <div class="section-tag">Internal · Confidential</div>
+      <h1>adidas<br>Social Playbook</h1>
+      <p class="sub">请输入你的公司邮箱验证身份</p>
+      <div class="verify-input-group">
+        <input class="verify-input" id="verifyEmail" type="email"
+               placeholder="name@goodideamedia.com"
+               autocomplete="email" autocapitalize="off"
+               onkeydown="if(event.key==='Enter')doVerify()">
+        <button class="verify-submit" id="verifyBtn" onclick="doVerify()">验证邮箱</button>
+        <div class="verify-error" id="verifyError"></div>
+      </div>
+      <div class="verify-hint">仅限 goodideamedia 团队成员访问 · 注意保密</div>
+      <button class="verify-logout" id="verifyLogout" style="display:none" onclick="logoutVerify()">切换账号</button>
+    </div>
+  </div>
+
+  <!-- ═══ Top Bar ═══ -->
+  <div class="top-bar" id="topBar" style="display:none">
     <button class="btn-toc" onclick="showTOC()">☰ 目录</button>
     <div class="right-group">
       <span class="auth-status" id="authStatus">🔒</span>
@@ -174,18 +229,18 @@
     </div>
   </div>
   <div class="edit-hint" id="editHint">点击文字直接编辑</div>
-  <div class="swipe-hint" id="swipeHint">← 左右滑动翻页 →</div>
+  <div class="user-badge" id="userBadge" style="display:none"></div>
 
-  <!-- TOC Overlay -->
+  <!-- TOC -->
   <div class="modal-overlay" id="tocOverlay">
-    <div class="modal-box" style="max-width:440px;">
+    <div class="modal-box" style="max-width:440px">
       <button class="modal-close" onclick="hideTOC()">✕</button>
       <div class="modal-title">📋 目录</div>
       <ul class="toc-list" id="tocList"></ul>
     </div>
   </div>
 
-  <!-- Permission Overlay -->
+  <!-- Permission Modal -->
   <div class="modal-overlay" id="permOverlay">
     <div class="modal-box">
       <button class="modal-close" onclick="hidePerm()">✕</button>
@@ -194,11 +249,9 @@
   </div>
 
   <!-- ═══ SLIDES ═══ -->
+  <div class="slides-container" id="slidesContainer" style="display:none">
 
-  <div class="slides-container">
-
-    <!-- 1: Cover -->
-    <div class="slide active" data-slide="cover">
+    <div class="slide active">
       <div class="light-spot ls1"></div>
       <div class="light-spot ls2"></div>
       <div class="light-spot ls3"></div>
@@ -212,7 +265,6 @@
       </div>
     </div>
 
-    <!-- 2: 字体规范 -->
     <div class="slide">
       <div class="light-spot ls2"></div>
       <div class="light-spot ls4"></div>
@@ -228,7 +280,6 @@
       </div>
     </div>
 
-    <!-- 3: 发布日历 & 月报 -->
     <div class="slide">
       <div class="light-spot ls5"></div>
       <div class="light-spot ls1"></div>
@@ -244,7 +295,6 @@
       </div>
     </div>
 
-    <!-- 4: 商务流程 & Campaign -->
     <div class="slide">
       <div class="light-spot ls3"></div>
       <div class="light-spot ls4"></div>
@@ -260,7 +310,6 @@
       </div>
     </div>
 
-    <!-- 5: Reactive -->
     <div class="slide">
       <div class="light-spot ls1"></div>
       <div class="light-spot ls5"></div>
@@ -278,7 +327,6 @@
       </div>
     </div>
 
-    <!-- 6: 推文 -->
     <div class="slide">
       <div class="light-spot ls2"></div>
       <div class="light-spot ls4"></div>
@@ -296,7 +344,6 @@
       </div>
     </div>
 
-    <!-- 7: 多平台 -->
     <div class="slide">
       <div class="light-spot ls3"></div>
       <div class="light-spot ls1"></div>
@@ -312,7 +359,6 @@
       </div>
     </div>
 
-    <!-- 8: Hijack & 风格 -->
     <div class="slide">
       <div class="light-spot ls5"></div>
       <div class="light-spot ls2"></div>
@@ -327,7 +373,6 @@
       </div>
     </div>
 
-    <!-- 9: 后台入口 -->
     <div class="slide">
       <div class="light-spot ls4"></div>
       <div class="light-spot ls3"></div>
@@ -343,7 +388,6 @@
       </div>
     </div>
 
-    <!-- 10: OA & 加参 -->
     <div class="slide">
       <div class="light-spot ls1"></div>
       <div class="light-spot ls5"></div>
@@ -358,8 +402,7 @@
       </div>
     </div>
 
-    <!-- 11: 学习资料 -->
-      <div class="slide">
+    <div class="slide">
       <div class="light-spot ls2"></div>
       <div class="light-spot ls3"></div>
       <div class="slide-content">
@@ -374,7 +417,6 @@
       </div>
     </div>
 
-    <!-- 12: Ending -->
     <div class="slide">
       <div class="light-spot ls1"></div>
       <div class="light-spot ls2"></div>
@@ -390,25 +432,12 @@
 
   </div>
 
-  <div class="progress-bar" id="progressBar"></div>
-  <div class="page-number" id="pageNumber">1 / 12</div>
+  <div class="progress-bar" id="progressBar" style="display:none"></div>
+  <div class="page-number" id="pageNumber" style="display:none">1 / 12</div>
   <div class="toast" id="toast"></div>
 
   <script>
-    // ─── Data ───
-    const TOC_SLIDES = [
-      [2,'品牌基础','字体使用规范'],
-      [3,'运营节奏','发布日历 & 月报'],
-      [4,'流程规范','商务流程 & Campaign'],
-      [5,'01 · Reactive','赛事实时跟进'],
-      [6,'02 · 推文','公众号发布流程'],
-      [7,'03 · 多平台','平台发布指南'],
-      [8,'04 · 互动 & 风格','Hijack & 内容风格'],
-      [9,'工具 🔧','运营后台入口'],
-      [10,'工具 🔧','OA & 推文加参'],
-      [11,'资源 📚','学习 & 参考资料'],
-    ];
-
+    const TOC_SLIDES = [[2,'品牌基础','字体使用规范'],[3,'运营节奏','发布日历 & 月报'],[4,'流程规范','商务流程 & Campaign'],[5,'01 · Reactive','赛事实时跟进'],[6,'02 · 推文','公众号发布流程'],[7,'03 · 多平台','平台发布指南'],[8,'04 · 互动 & 风格','Hijack & 内容风格'],[9,'工具 🔧','运营后台入口'],[10,'工具 🔧','OA & 推文加参'],[11,'资源 📚','学习 & 参考资料']];
     const slides = document.querySelectorAll('.slide');
     const progressBar = document.getElementById('progressBar');
     const pageNumber = document.getElementById('pageNumber');
@@ -419,263 +448,199 @@
     const authStatus = document.getElementById('authStatus');
     const toast = document.getElementById('toast');
     const tocList = document.getElementById('tocList');
-    const swipeHint = document.getElementById('swipeHint');
+    const userBadge = document.getElementById('userBadge');
     let currentSlide = 0, editMode = false, toastTimer = null;
-    let editApproved = false, swipeTimer = null;
+    let editApproved = false;
 
-    // ─── TOC (excludes cover & ending) ───
-    TOC_SLIDES.forEach(([idx, tag, title]) => {
+    // ─── TOC ───
+    TOC_SLIDES.forEach(([idx,tag,title]) => {
       const li = document.createElement('li');
-      li.className = 'toc-item';
-      li.dataset.index = idx;
+      li.className = 'toc-item'; li.dataset.index = idx;
       li.innerHTML = `<div class="toc-num">${idx}</div><div class="toc-info"><div class="toc-tag">${tag}</div><div class="toc-title">${title}</div></div>`;
-      li.addEventListener('click', () => { goToSlide(idx-1); hideTOC(); });
+      li.addEventListener('click',()=>{goToSlide(idx-1);hideTOC()});
       tocList.appendChild(li);
     });
+    slides.forEach((_,i)=>{const d=document.createElement('div');d.className='progress-dot';d.addEventListener('click',()=>goToSlide(i));progressBar.appendChild(d)});
 
-    // ─── Progress dots ───
-    slides.forEach((_, i) => {
-      const d = document.createElement('div');
-      d.className = 'progress-dot';
-      d.addEventListener('click', () => goToSlide(i));
-      progressBar.appendChild(d);
-    });
+    function updateSlides(){
+      slides.forEach((s,i)=>{s.classList.remove('active','prev');if(i===currentSlide)s.classList.add('active');else if(i<currentSlide)s.classList.add('prev')});
+      document.querySelectorAll('.progress-dot').forEach((d,i)=>d.classList.toggle('active',i===currentSlide));
+      pageNumber.textContent=`${currentSlide+1} / ${slides.length}`;
+      document.querySelectorAll('.toc-item').forEach(item=>item.classList.toggle('active',parseInt(item.dataset.index)-1===currentSlide));
+    }
+    function nextSlide(){if(currentSlide<slides.length-1){currentSlide++;updateSlides()}}
+    function prevSlide(){if(currentSlide>0){currentSlide--;updateSlides()}}
+    function goToSlide(i){currentSlide=i;updateSlides()}
 
-    function updateSlides() {
-      slides.forEach((s, i) => {
-        s.classList.remove('active', 'prev');
-        if (i === currentSlide) s.classList.add('active');
-        else if (i < currentSlide) s.classList.add('prev');
-      });
-      document.querySelectorAll('.progress-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
-      pageNumber.textContent = `${currentSlide+1} / ${slides.length}`;
-      // Highlight current in TOC
-      document.querySelectorAll('.toc-item').forEach(item => {
-        const idx = parseInt(item.dataset.index);
-        item.classList.toggle('active', idx-1 === currentSlide);
-      });
-      // Hide swipe hint after first swipe
-      if (swipeHint && swipeHint.style.opacity !== '0') {
-        if (currentSlide > 0) { swipeHint.style.opacity = '0'; }
+    document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nextSlide()}else if(e.key==='ArrowLeft'){e.preventDefault();prevSlide()}else if(e.key==='Escape'){hideTOC();hidePerm()}});
+    let tx=0;
+    document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+    document.addEventListener('touchmove',e=>{const dx=e.touches[0].clientX-tx;if(Math.abs(dx)>40)e.preventDefault()},{passive:false});
+    document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>40){d>0?nextSlide():prevSlide()}},{passive:true});
+
+    // ─── Email Verification ───
+    function doVerify(){
+      const email = document.getElementById('verifyEmail').value.trim().toLowerCase();
+      const errEl = document.getElementById('verifyError');
+      if(!email){errEl.textContent='请输入邮箱地址';return}
+      if(!email.includes('@')){errEl.textContent='请输入有效的邮箱地址';return}
+      const local = email.split('@')[0];
+      const domain = email.split('@')[1];
+      if(domain !== 'goodideamedia.com' && domain !== 'goodideamedia.com.cn'){
+        errEl.textContent='❌ 仅限 @goodideamedia.com 邮箱访问';
+        return;
       }
+      if(local.length < 1){errEl.textContent='请输入有效的邮箱地址';return}
+      errEl.textContent='';
+      // Success - store verification
+      localStorage.setItem('adidas_verified','true');
+      localStorage.setItem('adidas_verified_email',email);
+      showContent(email);
     }
 
-    function nextSlide() { if (currentSlide < slides.length-1) { currentSlide++; updateSlides(); } }
-    function prevSlide() { if (currentSlide > 0) { currentSlide--; updateSlides(); } }
-    function goToSlide(i) { currentSlide = i; updateSlides(); }
+    function showContent(email){
+      document.getElementById('verifyOverlay').classList.add('hidden');
+      document.getElementById('topBar').style.display='flex';
+      document.getElementById('slidesContainer').style.display='flex';
+      document.getElementById('progressBar').style.display='flex';
+      document.getElementById('pageNumber').style.display='block';
+      userBadge.style.display='block';
+      userBadge.textContent = email;
+      checkApproval();
+      // Hide swipe hint after a moment
+      setTimeout(()=>{if(swipeHint)swipeHint.style.opacity='0'},6000);
+      console.log('Verified:',email);
+    }
 
-    // ─── Touch Swipe (horizontal) ───
-    let touch = { startX: 0, startY: 0, startTime: 0, swiped: false };
-    document.addEventListener('touchstart', e => {
-      touch.startX = e.touches[0].clientX;
-      touch.startY = e.touches[0].clientY;
-      touch.startTime = Date.now();
-      touch.swiped = false;
-    }, { passive: true });
-
-    document.addEventListener('touchmove', e => {
-      if (touch.swiped) return;
-      const dx = e.touches[0].clientX - touch.startX;
-      const dy = e.touches[0].clientY - touch.startY;
-      // Lock to horizontal if horizontal movement dominates
-      if (Math.abs(dx) > Math.abs(dy) * 1.5) {
-        e.preventDefault();
+    function checkVerify(){
+      const v = localStorage.getItem('adidas_verified');
+      const email = localStorage.getItem('adidas_verified_email');
+      if(v==='true' && email){
+        const domain = email.includes('@') ? email.split('@')[1] : '';
+        if(domain === 'goodideamedia.com' || domain === 'goodideamedia.com.cn'){
+          showContent(email);
+          return;
+        }
       }
-    }, { passive: false });
+      // Not verified - show overlay (already visible by default)
+    }
 
-    document.addEventListener('touchend', e => {
-      if (touch.swiped) return;
-      const dx = touch.startX - e.changedTouches[0].clientX;
-      const dy = touch.startY - e.changedTouches[0].clientY;
-      const elapsed = Date.now() - touch.startTime;
-      // Require: horizontal > 40px AND horizontal > vertical*1.2 AND fast enough
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2 && elapsed < 500) {
-        touch.swiped = true;
-        dx > 0 ? nextSlide() : prevSlide();
-      }
-    }, { passive: true });
-
-    // ─── Keyboard ───
-    document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
-      else if (e.key === 'Escape') { hideTOC(); hidePerm(); }
-    });
+    function logoutVerify(){
+      localStorage.removeItem('adidas_verified');
+      localStorage.removeItem('adidas_verified_email');
+      localStorage.removeItem('adidas_admin_approved');
+      // Hide all content
+      document.getElementById('verifyOverlay').classList.remove('hidden');
+      document.getElementById('topBar').style.display='none';
+      document.getElementById('slidesContainer').style.display='none';
+      document.getElementById('progressBar').style.display='none';
+      document.getElementById('pageNumber').style.display='none';
+      userBadge.style.display='none';
+      editBtn.className='edit-toggle locked';
+      editBtnIcon.textContent='🔒';
+      editBtnText.textContent='申请授权';
+      document.getElementById('verifyEmail').value='';
+      document.getElementById('verifyError').textContent='';
+    }
 
     // ─── Edit Permission ───
-    const ADMIN_KEY = 'adidas_admin_approved';
-    const ADMIN_PWD_KEY = 'adidas_admin_pwd';
-    const defaultPwd = 'adidas2026';
-    if (!localStorage.getItem(ADMIN_PWD_KEY)) localStorage.setItem(ADMIN_PWD_KEY, defaultPwd);
+    const ADMIN_KEY='adidas_admin_approved';
+    const ADMIN_PWD_KEY='adidas_admin_pwd';
+    const defaultPwd='adidas2026';
+    if(!localStorage.getItem(ADMIN_PWD_KEY))localStorage.setItem(ADMIN_PWD_KEY,defaultPwd);
 
-    function checkApproval() {
-      editApproved = localStorage.getItem(ADMIN_KEY) === 'true';
+    function checkApproval(){
+      editApproved=localStorage.getItem(ADMIN_KEY)==='true';
       updateEditUI();
     }
-
-    function updateEditUI() {
-      if (editApproved) {
-        editBtn.className = 'edit-toggle editable';
-        editBtnIcon.textContent = '✎';
-        editBtnText.textContent = '编辑';
-        authStatus.textContent = '✓ 管理员';
-        authStatus.className = 'auth-status approved';
-      } else {
-        editBtn.className = 'edit-toggle locked';
-        editBtnIcon.textContent = '🔒';
-        editBtnText.textContent = '申请授权';
-        authStatus.textContent = '🔒';
-        authStatus.className = 'auth-status';
-        if (editMode) toggleEditMode(false);
+    function updateEditUI(){
+      if(editApproved){
+        editBtn.className='edit-toggle editable';
+        editBtnIcon.textContent='✎'; editBtnText.textContent='编辑';
+        authStatus.textContent='✓ 管理员'; authStatus.className='auth-status approved';
+      }else{
+        editBtn.className='edit-toggle locked';
+        editBtnIcon.textContent='🔒'; editBtnText.textContent='申请授权';
+        authStatus.textContent='🔒'; authStatus.className='auth-status';
+        if(editMode)toggleEditMode(false);
       }
     }
+    function handleEditClick(){editApproved?toggleEditMode(!editMode):showPermModal('apply')}
+    function toggleEditMode(on){editMode=on;editBtn.classList.toggle('active',on);editHint.classList.toggle('show',on);document.querySelectorAll('.editable').forEach(el=>el.contentEditable=on);showToast(on?'✎ 编辑模式已开启':'🔒 编辑模式已关闭')}
 
-    function handleEditClick() {
-      if (editApproved) { toggleEditMode(!editMode); }
-      else { showPermModal('apply'); }
+    function showPermModal(view){
+      const overlay=document.getElementById('permOverlay');overlay.classList.add('show');
+      const c=document.getElementById('permView');
+      if(view==='apply')renderApply(c);else if(view==='admin')renderAdmin(c);
     }
-
-    function toggleEditMode(on) {
-      editMode = on;
-      editBtn.classList.toggle('active', on);
-      editHint.classList.toggle('show', on);
-      document.querySelectorAll('.editable').forEach(el => el.contentEditable = on);
-      showToast(on ? '✎ 编辑模式已开启' : '🔒 编辑模式已关闭');
-    }
-
-    // ─── Permission Modal ───
-    function showPermModal(view) {
-      const overlay = document.getElementById('permOverlay');
-      const container = document.getElementById('permView');
-      overlay.classList.add('show');
-
-      if (view === 'apply') renderApplyView(container);
-      else if (view === 'admin') renderAdminView(container);
-    }
-
-    function hidePerm() { document.getElementById('permOverlay').classList.remove('show'); }
-
-    function renderApplyView(container) {
-      const req = (() => { try { return JSON.parse(localStorage.getItem('adidas_edit_request')); } catch(e) { return null; } })();
-      let statusHtml = '';
-      let disabled = false;
-      if (req) {
-        if (req.status === 'pending') { statusHtml = '<div class="apply-status" style="font-size:.75rem;color:#fcd34d;text-align:center;padding:.5rem 0">⏳ 申请已提交，等待审批</div>'; disabled = true; }
-        else if (req.status === 'approved') { statusHtml = '<div style="font-size:.75rem;color:#6ee7b7;text-align:center;padding:.5rem 0">✅ 已通过审批</div>'; disabled = true; }
-        else if (req.status === 'denied') { statusHtml = '<div style="font-size:.75rem;color:#fca5a5;text-align:center;padding:.5rem 0">❌ 申请被拒绝，可重新提交</div>'; }
-      }
-      container.innerHTML = `
-        <div class="modal-title">🔒 申请编辑权限</div>
+    function hidePerm(){document.getElementById('permOverlay').classList.remove('show')}
+    function renderApply(c){
+      const req=(()=>{try{return JSON.parse(localStorage.getItem('adidas_edit_request'))}catch(e){return null}})();
+      let s='',dis=false;
+      if(req){if(req.status==='pending'){s='<div style="font-size:.75rem;color:#fcd34d;text-align:center;padding:.5rem 0">⏳ 申请已提交，等待审批</div>';dis=true}else if(req.status==='approved'){s='<div style="font-size:.75rem;color:#6ee7b7;text-align:center;padding:.5rem 0">✅ 已通过审批</div>';dis=true}else if(req.status==='denied'){s='<div style="font-size:.75rem;color:#fca5a5;text-align:center;padding:.5rem 0">❌ 已被拒绝，可重新提交</div>'}}
+      c.innerHTML=`<div class="modal-title">🔒 申请编辑权限</div>
         <div class="form-group"><label class="form-label">姓名</label><input class="form-input" id="fName" placeholder="请输入姓名" maxlength="20"></div>
-        <div class="form-group"><label class="form-label">邮箱</label><input class="form-input" id="fEmail" placeholder="请输入邮箱" type="email"></div>
+        <div class="form-group"><label class="form-label">邮箱</label><input class="form-input" id="fEmail" placeholder="请输入邮箱" type="email" value="${localStorage.getItem('adidas_verified_email')||''}" readonly style="opacity:.5"></div>
         <div class="form-group"><label class="form-label">申请理由</label><input class="form-input" id="fReason" placeholder="例如：需要更新品牌资料" maxlength="100"></div>
-        <button class="btn-primary" id="fSubmit" onclick="doApply()" ${disabled?'disabled':''}>提交申请</button>
-        ${statusHtml}
+        <button class="btn-primary" id="fSubmit" onclick="doApply()" ${dis?'disabled':''}>提交申请</button>${s}
         <div class="divider"></div>
-        <div class="admin-link" onclick="showPermModal('admin')">🔐 我是管理员，点击验证</div>
-      `;
+        <div class="admin-link" onclick="showPermModal('admin')">🔐 我是管理员，点击验证</div>`;
     }
-
-    function renderAdminView(container) {
-      container.innerHTML = `
-        <div class="modal-title">🔐 管理员验证</div>
+    function renderAdmin(c){
+      c.innerHTML=`<div class="modal-title">🔐 管理员验证</div>
         <div class="form-group"><label class="form-label">审批密码</label><input class="form-input" id="aPwd" type="password" placeholder="输入管理员密码" style="font-size:.8rem"></div>
         <button class="btn-primary" onclick="doAdminLogin()" style="margin-bottom:.8rem">验证身份</button>
         <div id="aReqs"></div>
         <div class="divider"></div>
-        <div class="admin-link" onclick="showPermModal('apply')">← 返回申请页面</div>
-      `;
+        <div class="admin-link" onclick="showPermModal('apply')">← 返回申请页面</div>`;
     }
-
-    window.doApply = function() {
-      const name = document.getElementById('fName').value.trim();
-      const email = document.getElementById('fEmail').value.trim();
-      const reason = document.getElementById('fReason').value.trim();
-      if (!name || !email || !reason) { showToast('⚠️ 请填写完整信息'); return; }
-      localStorage.setItem('adidas_edit_request', JSON.stringify({ name, email, reason, time: new Date().toISOString(), status: 'pending' }));
+    window.doApply=function(){
+      const n=document.getElementById('fName').value.trim(),r=document.getElementById('fReason').value.trim();
+      const email=localStorage.getItem('adidas_verified_email')||'';
+      if(!n||!r){showToast('⚠️ 请填写完整信息');return}
+      localStorage.setItem('adidas_edit_request',JSON.stringify({name:n,email,reason:r,time:new Date().toISOString(),status:'pending'}));
       showToast('✅ 申请已提交，等待管理员审批');
-      document.getElementById('fSubmit').disabled = true;
-      document.getElementById('fSubmit').textContent = '已提交';
+      document.getElementById('fSubmit').disabled=true;document.getElementById('fSubmit').textContent='已提交';
     };
-
-    window.doAdminLogin = function() {
-      const pwd = document.getElementById('aPwd').value.trim();
-      const stored = localStorage.getItem(ADMIN_PWD_KEY);
-      if (pwd === stored) {
-        localStorage.setItem(ADMIN_KEY, 'true');
-        editApproved = true;
-        updateEditUI();
-        hidePerm();
-        showToast('✅ 管理员验证成功，可编辑');
-        renderAdminReqs();
-      } else {
-        showToast('❌ 密码错误');
-      }
+    window.doAdminLogin=function(){
+      const pwd=document.getElementById('aPwd').value.trim();
+      if(pwd===localStorage.getItem(ADMIN_PWD_KEY)){
+        localStorage.setItem(ADMIN_KEY,'true');editApproved=true;
+        updateEditUI();hidePerm();showToast('✅ 管理员验证成功');
+        const r=document.getElementById('aReqs');if(r)renderAdminReqs();
+      }else{showToast('❌ 密码错误')}
     };
-
-    function renderAdminReqs() {
-      const container = document.getElementById('aReqs');
-      if (!container) return;
-      const req = (() => { try { return JSON.parse(localStorage.getItem('adidas_edit_request')); } catch(e) { return null; } })();
-      if (!req) { container.innerHTML = '<div style="font-size:.75rem;color:rgba(255,255,255,.3);text-align:center">暂无待审批申请</div>'; return; }
-      if (req.status === 'approved') { container.innerHTML = '<div style="font-size:.75rem;color:#6ee7b7;text-align:center">✅ 已批准</div>'; return; }
-      if (req.status === 'denied') { container.innerHTML = '<div style="font-size:.75rem;color:#fca5a5;text-align:center">❌ 已拒绝</div>'; return; }
-      container.innerHTML = `<div class="req-item"><div class="req-info"><div class="req-name">${req.name}</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">${req.email}</div><div class="req-reason">${req.reason}</div></div><div class="req-actions"><button class="btn-sm btn-approve" onclick="doApprove()">批准</button><button class="btn-sm btn-deny" onclick="doDeny()">拒绝</button></div></div>`;
+    function renderAdminReqs(){
+      const c=document.getElementById('aReqs');if(!c)return;
+      const req=(()=>{try{return JSON.parse(localStorage.getItem('adidas_edit_request'))}catch(e){return null}})();
+      if(!req){c.innerHTML='<div style="font-size:.75rem;color:rgba(255,255,255,.3);text-align:center">暂无待审批申请</div>';return}
+      if(req.status==='approved'){c.innerHTML='<div style="font-size:.75rem;color:#6ee7b7;text-align:center">✅ 已批准</div>';return}
+      if(req.status==='denied'){c.innerHTML='<div style="font-size:.75rem;color:#fca5a5;text-align:center">❌ 已拒绝</div>';return}
+      c.innerHTML=`<div class="req-item"><div class="req-info"><div class="req-name">${req.name}</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">${req.email}</div><div class="req-reason">${req.reason}</div></div><div class="req-actions"><button class="btn-sm btn-approve" onclick="doApprove()">批准</button><button class="btn-sm btn-deny" onclick="doDeny()">拒绝</button></div></div>`;
     }
-
-    window.doApprove = function() {
-      const r = JSON.parse(localStorage.getItem('adidas_edit_request'));
-      r.status = 'approved';
-      localStorage.setItem('adidas_edit_request', JSON.stringify(r));
-      localStorage.setItem(ADMIN_KEY, 'true');
-      editApproved = true;
-      updateEditUI();
-      renderAdminReqs();
-      hidePerm();
-      showToast('✅ 已批准编辑权限');
+    window.doApprove=function(){
+      const r=JSON.parse(localStorage.getItem('adidas_edit_request'));r.status='approved';
+      localStorage.setItem('adidas_edit_request',JSON.stringify(r));
+      localStorage.setItem(ADMIN_KEY,'true');editApproved=true;
+      updateEditUI();renderAdminReqs();hidePerm();showToast('✅ 已批准');
+    };
+    window.doDeny=function(){
+      const r=JSON.parse(localStorage.getItem('adidas_edit_request'));r.status='denied';
+      localStorage.setItem('adidas_edit_request',JSON.stringify(r));renderAdminReqs();showToast('❌ 已拒绝');
     };
 
-    window.doDeny = function() {
-      const r = JSON.parse(localStorage.getItem('adidas_edit_request'));
-      r.status = 'denied';
-      localStorage.setItem('adidas_edit_request', JSON.stringify(r));
-      renderAdminReqs();
-      showToast('❌ 已拒绝');
-    };
+    function showToast(msg){toast.textContent=msg;toast.classList.add('show');if(toastTimer)clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2500)}
+    function showTOC(){document.getElementById('tocOverlay').classList.add('show')}
+    function hideTOC(){document.getElementById('tocOverlay').classList.remove('show')}
 
-    // ─── Toast ───
-    function showToast(msg) {
-      toast.textContent = msg; toast.classList.add('show');
-      if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
-    }
-
-    // ─── TOC show/hide ───
-    function showTOC() { document.getElementById('tocOverlay').classList.add('show'); }
-    function hideTOC() { document.getElementById('tocOverlay').classList.remove('show'); }
-
-    // ─── Auto-save ───
-    function saveContent() {
-      const d = {};
-      document.querySelectorAll('.editable').forEach((el,i) => { d['e_'+i] = el.innerHTML; });
-      localStorage.setItem('adidas_pb', JSON.stringify(d));
-    }
-    setInterval(() => { if (editMode) saveContent(); }, 30000);
-    window.addEventListener('beforeunload', () => { if (editMode) saveContent(); });
-
-    // ─── Restore saved content ───
-    try {
-      const s = localStorage.getItem('adidas_pb');
-      if (s) { const d = JSON.parse(s); document.querySelectorAll('.editable').forEach((el,i) => { const k='e_'+i; if(d[k]) el.innerHTML = d[k]; }); }
-    } catch(e) {}
+    function saveContent(){const d={};document.querySelectorAll('.editable').forEach((el,i)=>{d['e_'+i]=el.innerHTML});localStorage.setItem('adidas_pb',JSON.stringify(d))}
+    setInterval(()=>{if(editMode)saveContent()},30000);
+    window.addEventListener('beforeunload',()=>{if(editMode)saveContent()});
+    try{const s=localStorage.getItem('adidas_pb');if(s){const d=JSON.parse(s);document.querySelectorAll('.editable').forEach((el,i)=>{const k='e_'+i;if(d[k])el.innerHTML=d[k]})}}catch(e){}
 
     // ─── Init ───
-    checkApproval();
-
-    // Auto-hide swipe hint after 5s
-    setTimeout(() => { if (swipeHint) swipeHint.style.opacity = '0'; }, 6000);
-
-    console.log('adidas Social Playbook | ☰ 目录(无封面/封底) | ← → 翻页 | 触摸左右滑动');
+    checkVerify();
+    console.log('adidas Social Playbook | 邮箱验证 | ☰ 目录 | ← → 翻页');
   </script>
 </body>
 </html>
