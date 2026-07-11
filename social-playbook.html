@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>adidas Social Playbook</title>
+  <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/tailwindcss/3.0.23/tailwind.min.js"></script>
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Noto Sans SC','Inter',sans-serif;
+      background:#000;color:#fff;
+      overflow:hidden;height:100vh;width:100vw;
+      -webkit-user-select:none;user-select:none
+    }
+    .slides-container{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0a0a;position:relative}
+    .slide{
+      width:100%;height:100%;max-width:480px;max-height:854px;
+      aspect-ratio:9/16;position:absolute;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:2.5rem 1.8rem;
+      opacity:0;transform:translateX(120%);
+      transition:all 0.55s cubic-bezier(.22,1,.36,1);
+      overflow:hidden;
+      background:linear-gradient(180deg,#0a0a0a 0%,#000 100%)
+    }
+    .slide.active{opacity:1;transform:translateX(0)}
+    .slide.prev{opacity:0;transform:translateX(-120%)}
+    .slide.dismiss-left{opacity:0;transform:translateX(-120%)!important}
+
+    .light-spot{position:absolute;border-radius:50%;filter:blur(120px);opacity:.25;pointer-events:none}
+    .ls1{width:320px;height:320px;background:#3b82f6;top:-120px;right:-100px;animation:float1 22s ease-in-out infinite}
+    .ls2{width:280px;height:280px;background:#8b5cf6;bottom:-100px;left:-80px;animation:float2 26s ease-in-out infinite}
+    .ls3{width:240px;height:240px;background:#06b6d4;top:50%;left:50%;transform:translate(-50%,-50%);animation:float3 20s ease-in-out infinite}
+    .ls4{width:200px;height:200px;background:#f59e0b;top:60%;right:-60px;animation:float1 18s ease-in-out infinite}
+    .ls5{width:260px;height:260px;background:#10b981;top:-80px;left:-60px;animation:float2 24s ease-in-out infinite}
+    @keyframes float1{0%,100%{transform:translate(0,0)}25%{transform:translate(-40px,30px)}50%{transform:translate(30px,50px)}75%{transform:translate(50px,-20px)}}
+    @keyframes float2{0%,100%{transform:translate(0,0)}33%{transform:translate(45px,-35px)}66%{transform:translate(-35px,35px)}}
+    @keyframes float3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.25)}}
+
+    .slide-content{position:relative;z-index:10;text-align:center;width:100%;max-height:100%;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+    .slide-content::-webkit-scrollbar{width:3px}
+    .slide-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+
+    .section-tag{display:inline-block;font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1);padding:.25rem .75rem;border-radius:20px;margin-bottom:1rem}
+    .editable{outline:none;transition:background .2s;border-radius:4px;padding:0 2px}
+    .editable:focus{background:rgba(255,255,255,.05);box-shadow:0 0 0 1px rgba(59,130,246,.2);-webkit-user-select:text;user-select:text}
+    .content-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:.85rem 1.1rem;margin-bottom:.65rem;text-align:left;transition:all .2s}
+    .content-card:hover{background:rgba(255,255,255,.06)}
+    .label-key{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+    .label-val{font-size:.85rem;font-weight:400;color:rgba(255,255,255,.8);line-height:1.6}
+    .link-row{margin-top:.4rem;font-size:.7rem;display:flex;align-items:center;gap:.35rem}
+    .playbook-link{color:#67e8f9;text-decoration:none;border-bottom:1px solid rgba(103,232,249,.25);transition:all .2s;word-break:break-all;padding:1px 0}
+    .playbook-link:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+    .link-icon{font-size:.6rem;opacity:.5;flex-shrink:0}
+    .bullet-item{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.5rem;text-align:left}
+    .bullet-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:.45rem}
+    .step-num{font-size:2.3rem;font-weight:900;color:rgba(59,130,246,.15);line-height:1;margin-bottom:.15rem}
+
+    /* ── Top Bar ── */
+    .top-bar{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;pointer-events:none}
+    .top-bar>*{pointer-events:auto}
+    .btn-toc{
+      display:flex;align-items:center;gap:5px;
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+      border-radius:8px;padding:6px 11px;color:rgba(255,255,255,.5);
+      font-size:.7rem;cursor:pointer;transition:all .2s;font-family:inherit
+    }
+    .btn-toc:hover{background:rgba(255,255,255,.1);color:#fff}
+    .right-group{display:flex;align-items:center;gap:8px}
+    .auth-status{font-size:.6rem;color:rgba(255,255,255,.25);padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.04)}
+    .auth-status.approved{color:#6ee7b7;background:rgba(16,185,129,.1)}
+
+    .edit-toggle{
+      display:flex;align-items:center;gap:5px;
+      padding:6px 11px;border-radius:8px;
+      border:1px solid rgba(255,255,255,.08);
+      cursor:pointer;transition:all .2s;
+      font-size:.7rem;color:rgba(255,255,255,.4);font-family:inherit;
+      background:rgba(255,255,255,.04)
+    }
+    .edit-toggle:hover{background:rgba(255,255,255,.08)}
+    .edit-toggle.locked{opacity:.5;cursor:not-allowed}
+    .edit-toggle.editable{color:rgba(255,255,255,.7);border-color:rgba(59,130,246,.3)}
+    .edit-toggle.editable:hover{border-color:rgba(59,130,246,.5)}
+    .edit-toggle.active{border-color:rgba(59,130,246,.4);background:rgba(59,130,246,.1);color:#93c5fd}
+    .edit-hint{
+      position:fixed;top:52px;right:14px;z-index:200;
+      font-size:.6rem;color:rgba(255,255,255,.2);text-align:right;
+      line-height:1.4;opacity:0;transition:opacity .5s;pointer-events:none
+    }
+    .edit-hint.show{opacity:1}
+
+    /* ── Swipe hint ── */
+    .swipe-hint{
+      position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
+      z-index:99;font-size:.55rem;color:rgba(255,255,255,.12);
+      letter-spacing:.1em;pointer-events:none;
+      transition:opacity 1s;opacity:1
+    }
+
+    /* ── Modal ── */
+    .modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s}
+    .modal-overlay.show{opacity:1;pointer-events:auto}
+    .modal-box{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:2rem;max-width:420px;width:90%;max-height:80vh;overflow-y:auto;position:relative}
+    .modal-close{position:absolute;top:12px;right:16px;font-size:1.2rem;color:rgba(255,255,255,.3);cursor:pointer;transition:.2s;background:none;border:none;font-family:inherit}
+    .modal-close:hover{color:#fff}
+    .modal-title{font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;text-align:center}
+
+    .toc-list{list-style:none}
+    .toc-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .2s;border:1px solid transparent;margin-bottom:4px}
+    .toc-item:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.06)}
+    .toc-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;background:rgba(255,255,255,.06);color:rgba(255,255,255,.4)}
+    .toc-item.active .toc-num{background:rgba(59,130,246,.2);color:#93c5fd}
+    .toc-info{flex:1;min-width:0}
+    .toc-tag{font-size:.6rem;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,.25);letter-spacing:.05em}
+    .toc-title{font-size:.85rem;font-weight:500;margin-top:1px}
+    .toc-item.active .toc-title{color:#93c5fd}
+
+    .form-group{margin-bottom:1rem}
+    .form-label{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem;display:block}
+    .form-input{width:100%;padding:.6rem .8rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#fff;font-size:.85rem;font-family:inherit;outline:none;transition:all .2s}
+    .form-input:focus{border-color:rgba(59,130,246,.4);background:rgba(255,255,255,.06)}
+    .form-input::placeholder{color:rgba(255,255,255,.2)}
+    .btn-primary{width:100%;padding:.7rem;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.25);border-radius:10px;color:#93c5fd;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+    .btn-primary:hover{background:rgba(59,130,246,.25)}
+    .btn-primary:disabled{opacity:.3;cursor:not-allowed}
+    .divider{height:1px;background:rgba(255,255,255,.06);margin:1rem 0}
+    .admin-link{text-align:center;font-size:.65rem;color:rgba(255,255,255,.2);cursor:pointer;margin-top:.5rem}
+    .admin-link:hover{color:rgba(255,255,255,.4)}
+
+    .req-item{display:flex;align-items:center;justify-content:space-between;padding:.6rem;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:.4rem}
+    .req-info{font-size:.75rem;line-height:1.5}
+    .req-name{font-weight:600;color:rgba(255,255,255,.7)}
+    .req-reason{color:rgba(255,255,255,.4);font-size:.7rem}
+    .req-actions{display:flex;gap:6px}
+    .btn-sm{padding:4px 10px;border-radius:6px;font-size:.65rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .2s}
+    .btn-approve{background:rgba(16,185,129,.15);color:#6ee7b7}
+    .btn-approve:hover{background:rgba(16,185,129,.25)}
+    .btn-deny{background:rgba(239,68,68,.15);color:#fca5a5}
+    .btn-deny:hover{background:rgba(239,68,68,.25)}
+
+    .progress-bar{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:100;padding:0 1rem;max-width:480px;flex-wrap:wrap;justify-content:center}
+    .progress-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .3s}
+    .progress-dot.active{background:#fff;transform:scale(1.5)}
+    .progress-dot:hover{background:rgba(255,255,255,.5)}
+
+    .page-number{position:fixed;bottom:46px;left:50%;transform:translateX(-50%);font-size:.7rem;color:rgba(255,255,255,.25);z-index:100;letter-spacing:.05em}
+    .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(255,255,255,.08);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);padding:.5rem 1.2rem;border-radius:20px;font-size:.7rem;color:rgba(255,255,255,.6);z-index:600;opacity:0;transition:all .4s cubic-bezier(.22,1,.36,1);white-space:nowrap;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    @media(max-width:520px){
+      .slide{padding:1.8rem 1.2rem;max-width:100vw;max-height:100vh}
+      .top-bar{padding:6px 10px}
+      .btn-toc,.edit-toggle{padding:4px 8px;font-size:.65rem}
+      .auth-status{display:none}
+      .swipe-hint{font-size:.5rem}
+    }
+    @media(min-height:900px){.slide{max-height:800px}}
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <button class="btn-toc" onclick="showTOC()">☰ 目录</button>
+    <div class="right-group">
+      <span class="auth-status" id="authStatus">🔒</span>
+      <div class="edit-toggle locked" id="editBtn" onclick="handleEditClick()">
+        <span id="editBtnIcon">🔒</span>
+        <span id="editBtnText">申请授权</span>
+      </div>
+    </div>
+  </div>
+  <div class="edit-hint" id="editHint">点击文字直接编辑</div>
+  <div class="swipe-hint" id="swipeHint">← 左右滑动翻页 →</div>
+
+  <!-- TOC Overlay -->
+  <div class="modal-overlay" id="tocOverlay">
+    <div class="modal-box" style="max-width:440px;">
+      <button class="modal-close" onclick="hideTOC()">✕</button>
+      <div class="modal-title">📋 目录</div>
+      <ul class="toc-list" id="tocList"></ul>
+    </div>
+  </div>
+
+  <!-- Permission Overlay -->
+  <div class="modal-overlay" id="permOverlay">
+    <div class="modal-box">
+      <button class="modal-close" onclick="hidePerm()">✕</button>
+      <div id="permView"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDES ═══ -->
+
+  <div class="slides-container">
+
+    <!-- 1: Cover -->
+    <div class="slide active" data-slide="cover">
+      <div class="light-spot ls1"></div>
+      <div class="light-spot ls2"></div>
+      <div class="light-spot ls3"></div>
+      <div class="slide-content">
+        <div class="section-tag">Internal · Confidential</div>
+        <h1 class="text-5xl font-black mb-3 leading-tight editable">adidas<br>Social Playbook</h1>
+        <p class="text-base font-light text-gray-400 mb-3 editable">社交媒体运营手册</p>
+        <div style="width:40px;height:3px;background:rgba(255,255,255,.15);border-radius:2px;margin:.5rem auto"></div>
+        <p class="text-xs text-gray-500 editable" style="margin-top:2rem;">仅供内部 adidas 服务团队使用 · 注意保密</p>
+        <p class="text-xs text-gray-600 editable">联系：hedan@goodideamedia.com</p>
+      </div>
+    </div>
+
+    <!-- 2: 字体规范 -->
+    <div class="slide">
+      <div class="light-spot ls2"></div>
+      <div class="light-spot ls4"></div>
+      <div class="slide-content">
+        <div class="section-tag">品牌基础</div>
+        <h2 class="text-2xl font-black mb-5 editable">字体使用规范</h2>
+        <div style="text-align:left;width:100%">
+          <div class="content-card"><div class="label-key">中文字体</div><div class="label-val editable">正文：思源黑体（Source Han Sans）<br>Tagline：思源宋体（Source Han Serif）</div></div>
+          <div class="content-card"><div class="label-key">英文字体 · ITC Franklin Gothic</div><div class="label-val editable">用途：常规信息传达<br>变体：Book / Demi Compressed / Book Compressed<br><span style="color:#fca5a5">⚠ 其他变体无版权，禁止使用</span></div></div>
+          <div class="content-card"><div class="label-key">英文字体 · Denton</div><div class="label-val editable">用途：视觉情感表达<br>变体：仅限 Light（其他变体无版权）</div></div>
+          <div class="content-card"><div class="label-key">特殊字符</div><div class="label-val editable">ITC Franklin Gothic 不可用字符 → 使用 Source Han Sans</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3: 发布日历 & 月报 -->
+    <div class="slide">
+      <div class="light-spot ls5"></div>
+      <div class="light-spot ls1"></div>
+      <div class="slide-content">
+        <div class="section-tag">运营节奏</div>
+        <h2 class="text-2xl font-black mb-5 editable">发布日历 &amp; 月报</h2>
+        <div style="text-align:left;width:100%">
+          <div class="content-card"><div class="label-key">📅 发布日历</div><div class="label-val editable">SharePoint 共享版 · Rocky 提前一个月收集发布需求</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://adidasgroup.sharepoint.com/sites/GCABRAND/Shared%20Documents/Forms/AllItems.aspx?e=5%3A18f9fcd9d1ed4037837f91b6e6315d1f&sharingv2=true&fromShare=true&at=9&CID=7a3d219e%2D97a2%2D485e%2Da1c2%2D0b3153d75f61&FolderCTID=0x01200061581B93C2E0614EBAB5EAA1417AA371&id=%2Fsites%2FGCABRAND%2FShared%20Documents%2F2026%2F0%2E%20Calendar" target="_blank" rel="noopener">打开 Calendar →</a></div></div>
+          <div class="content-card"><div class="label-key">📊 Social 源数据</div><div class="label-val editable">飞书表格 · 2024 年社交发布内容源数据</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://k74u68pb5x.feishu.cn/sheets/UtB6s8P3shNYd8tCPOTcWdfNn8b" target="_blank" rel="noopener">打开飞书表格 →</a></div></div>
+          <div class="content-card"><div class="label-key">📈 月报</div><div class="label-val editable">adidas Monthly Report（PPT）· 客户内部版月报</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://adidasgroup.sharepoint.com/sites/GCABRAND/Shared%20Documents/Forms/AllItems.aspx?e=5%3Ae775f317d2104c3aafa350337eb19d39&sharingv2=true&fromShare=true&at=9&CID=f0541379%2Df7a2%2D4b75%2Da01f%2D507a81f7dede&FolderCTID=0x01200061581B93C2E0614EBAB5EAA1417AA371&id=%2Fsites%2FGCABRAND%2FShared%20Documents%2F2025%2F4%2E%20Reporting&viewid=05f652d2%2De37c%2D4f29%2Da1f2%2Db9963098ffc4" target="_blank" rel="noopener">打开 SharePoint →</a></div></div>
+          <div class="content-card" style="border-color:rgba(26,138,106,.2)"><div class="label-key" style="color:rgba(26,138,106,.6)">跨部门协作</div><div class="label-val editable">涉及与其他部门和其他 agency 的合作与沟通</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4: 商务流程 & Campaign -->
+    <div class="slide">
+      <div class="light-spot ls3"></div>
+      <div class="light-spot ls4"></div>
+      <div class="slide-content">
+        <div class="section-tag">流程规范</div>
+        <h2 class="text-2xl font-black mb-5 editable">商务流程 &amp; Campaign</h2>
+        <div style="text-align:left;width:100%">
+          <div class="content-card"><div class="label-key">📋 Business SOP</div><div class="label-val editable">商务流程标准操作指南</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://k74u68pb5x.feishu.cn/docx/R93wdmKWpo4grpxNai6cpMZ7nNb" target="_blank" rel="noopener">打开飞书文档 →</a></div></div>
+          <div class="content-card"><div class="label-key">📝 Partner Brief</div><div class="label-val editable">需 Partner 配合时准备 brief<br>参考：吴艳妮 × 小红书 publishing brief</div></div>
+          <div class="content-card"><div class="label-key">🤝 共创流程</div><div class="label-val editable">抖音共创教程（发起+接受）· 投流规则见 xlsx</div></div>
+          <div class="content-card" style="border-color:rgba(245,158,11,.2)"><div class="label-key" style="color:rgba(245,158,11,.6)">运营平台</div><div class="label-val editable">微博：adidas / adidas football<br>微信·抖音·视频号·小红书：adidas</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5: Reactive -->
+    <div class="slide">
+      <div class="light-spot ls1"></div>
+      <div class="light-spot ls5"></div>
+      <div class="slide-content">
+        <div class="section-tag">01 · Reactive</div>
+        <h2 class="text-2xl font-black mb-5 editable">赛事实时跟进</h2>
+        <div style="text-align:left;width:100%">
+          <div class="step-num">01</div>
+          <div class="content-card"><div class="label-key">🎨 海报制作</div><div class="label-val editable">基于 Global 模板，按赛事→项目→预测赛果→运动员确认</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://pan.baidu.com/s/1HFSw9MsHpZmoDSqS_eyDLw?pwd=a5da" target="_blank" rel="noopener">海报模板（百度网盘 提取码 a5da）→</a></div></div>
+          <div class="step-num" style="margin-top:.5rem">02</div>
+          <div class="content-card"><div class="label-key">🏷 话题标签</div><div class="label-val editable">#YouGotThis# #ADIZERO# #运动员名字# #赛事项目#</div></div>
+          <div class="step-num" style="margin-top:.5rem">03</div>
+          <div class="content-card"><div class="label-key">📄 文案确认</div><div class="label-val editable">与客户确认海报+文案 · Spoma 同步预判</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6: 推文 -->
+    <div class="slide">
+      <div class="light-spot ls2"></div>
+      <div class="light-spot ls4"></div>
+      <div class="slide-content">
+        <div class="section-tag">02 · 推文</div>
+        <h2 class="text-2xl font-black mb-5 editable">公众号发布流程</h2>
+        <div style="text-align:left;width:100%">
+          <div class="bullet-item"><div class="bullet-dot" style="background:#3b82f6"></div><div class="label-val editable">❶ 接收需求 — 推文 Calendar 获取任务</div></div>
+          <div class="bullet-item"><div class="bullet-dot" style="background:#8b5cf6"></div><div class="label-val editable">❷ 大纲 Check — Word/PDF 提交（切入点/标题/正文/设计风格）</div></div>
+          <div class="bullet-item"><div class="bullet-dot" style="background:#06b6d4"></div><div class="label-val editable">❸ 长图 Check — 对接群内发送给客户</div></div>
+          <div class="bullet-item"><div class="bullet-dot" style="background:#f59e0b"></div><div class="label-val editable">❹ 推文预览 — 壹伴插件生成预览</div></div>
+          <div class="bullet-item"><div class="bullet-dot" style="background:#10b981"></div><div class="label-val editable">❺ 正式发布 — 管理评论区互动</div></div>
+          <div class="content-card" style="margin-top:.5rem"><div class="label-key">公众号后台</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://mp.weixin.qq.com/" target="_blank" rel="noopener">mp.weixin.qq.com →</a></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7: 多平台 -->
+    <div class="slide">
+      <div class="light-spot ls3"></div>
+      <div class="light-spot ls1"></div>
+      <div class="slide-content">
+        <div class="section-tag">03 · 多平台</div>
+        <h2 class="text-2xl font-black mb-5 editable">平台发布指南</h2>
+        <div style="text-align:left;width:100%">
+          <div class="content-card"><div class="label-key">🎵 抖音</div><div class="label-val editable">发布仅自己可见 → 录屏预览</div></div>
+          <div class="content-card"><div class="label-key">📹 视频号</div><div class="label-val editable">后台直接预览，截图二维码给客户<br>注意封面图规范</div></div>
+          <div class="content-card"><div class="label-key">📕 小红书</div><div class="label-val editable">手机编辑选预览 → 录屏给客户<br>满屏图直接在手机选图编辑</div></div>
+          <div class="content-card"><div class="label-key">💬 公众号评论</div><div class="label-val editable">订阅号助手 APP 筛选正向互动</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8: Hijack & 风格 -->
+    <div class="slide">
+      <div class="light-spot ls5"></div>
+      <div class="light-spot ls2"></div>
+      <div class="slide-content">
+        <div class="section-tag">04 · 互动 &amp; 风格</div>
+        <h2 class="text-2xl font-black mb-5 editable">Hijack &amp; 内容风格</h2>
+        <div style="text-align:left;width:100%">
+          <div class="content-card"><div class="label-key">🎯 Hijack</div><div class="label-val editable">晒 adidas → 蹭互动 · 运动员 → 体现 #YouGotThis 避免水词</div></div>
+          <div class="content-card" style="border-color:rgba(245,158,11,.2)"><div class="label-key" style="color:#fcd34d">💡 RN Team 风格</div><div class="label-val editable">简单有力 · 有事说事 · 深度了解跑者 · 可玩 social 梗</div></div>
+          <div class="content-card" style="border-color:rgba(239,68,68,.2)"><div class="label-key" style="color:#fca5a5">🚫 避免事项</div><div class="label-val editable">Football 不要抽象 · 记录≠纪录 · 42.195KM≠42KM<br>产品名 xx 2.0≠xx 2 · adizero 写全称</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9: 后台入口 -->
+    <div class="slide">
+      <div class="light-spot ls4"></div>
+      <div class="light-spot ls3"></div>
+      <div class="slide-content">
+        <div class="section-tag">工具 🔧</div>
+        <h2 class="text-2xl font-black mb-5 editable">运营后台入口</h2>
+        <div style="text-align:left;width:100%">
+          <div class="content-card"><div class="label-key">🎵 抖音</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://creator.douyin.com/" target="_blank" rel="noopener">creator.douyin.com →</a></div></div>
+          <div class="content-card"><div class="label-key">📹 视频号</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://channels.weixin.qq.com/" target="_blank" rel="noopener">channels.weixin.qq.com →</a></div></div>
+          <div class="content-card"><div class="label-key">💬 公众号</div><div class="label-val editable">需预装壹伴插件</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://mp.weixin.qq.com/" target="_blank" rel="noopener">mp.weixin.qq.com →</a></div></div>
+          <div class="content-card"><div class="label-key">📕 小红书 Pro</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://pro.xiaohongshu.com/" target="_blank" rel="noopener">pro.xiaohongshu.com →</a></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10: OA & 加参 -->
+    <div class="slide">
+      <div class="light-spot ls1"></div>
+      <div class="light-spot ls5"></div>
+      <div class="slide-content">
+        <div class="section-tag">工具 🔧</div>
+        <h2 class="text-2xl font-black mb-5 editable">OA &amp; 推文加参</h2>
+        <div style="text-align:left;width:100%">
+          <div class="content-card"><div class="label-key">📋 OA 菜单更新</div><div class="label-val editable">账号：sunyifan@goodideamedia.com</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="http://www.woaap.com" target="_blank" rel="noopener">www.woaap.com →</a></div></div>
+          <div class="content-card"><div class="label-key">📈 推文加参</div><div class="label-val editable">账号：Yifan.Sun</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://ubm.adidas.com.cn" target="_blank" rel="noopener">ubm.adidas.com.cn →</a></div></div>
+          <div class="content-card"><div class="label-key">📁 素材库</div><div class="label-val editable">飞书文件夹 · 所有发布素材和 Deck</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://k74u68pb5x.feishu.cn/drive/folder/DBJEflWdPlyNf9dZWqYc8uSQnwW" target="_blank" rel="noopener">打开飞书文件夹 →</a></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11: 学习资料 -->
+      <div class="slide">
+      <div class="light-spot ls2"></div>
+      <div class="light-spot ls3"></div>
+      <div class="slide-content">
+        <div class="section-tag">资源 📚</div>
+        <h2 class="text-2xl font-black mb-5 editable">学习 &amp; 参考资料</h2>
+        <div style="text-align:left;width:100%">
+          <div class="content-card"><div class="label-key">📘 10G+ 学习资料</div><div class="label-val editable">飞书文档 · 持续更新</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://k74u68pb5x.feishu.cn/docx/JJXNdcbVRoATQdxuEsUcRZwMn6d" target="_blank" rel="noopener">打开飞书文档 →</a></div></div>
+          <div class="content-card"><div class="label-key">📙 RN Social Wiki</div><div class="label-val editable">飞书 Wiki · 跑步社交知识库</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://k74u68pb5x.feishu.cn/wiki/CT2QwELPyi6Qw4krGurc9dZcnNe" target="_blank" rel="noopener">打开飞书 Wiki →</a></div></div>
+          <div class="content-card"><div class="label-key">📁 Reactive 海报源文件</div><div class="label-val editable">百度网盘 · 海报模板</div><div class="link-row"><span class="link-icon">🔗</span><a class="playbook-link" href="https://pan.baidu.com/s/1HFSw9MsHpZmoDSqS_eyDLw?pwd=a5da" target="_blank" rel="noopener">百度网盘（提取码 a5da）→</a></div></div>
+          <div class="content-card"><div class="label-key">📎 附件清单</div><div class="label-val editable">投流规则.xlsx · 月报.pptx · Brief 模板 · PDF · 字体包</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12: Ending -->
+    <div class="slide">
+      <div class="light-spot ls1"></div>
+      <div class="light-spot ls2"></div>
+      <div class="light-spot ls3"></div>
+      <div class="slide-content">
+        <div class="section-tag">#YouGotThis</div>
+        <h1 class="text-4xl font-black mb-4 leading-tight editable">这就是<br>adidas Social</h1>
+        <div style="width:40px;height:3px;background:rgba(255,255,255,.15);border-radius:2px;margin:1rem auto"></div>
+        <p class="text-base font-light text-gray-400 mb-2 editable">简单有力 · 有事说事</p>
+        <p class="text-sm text-gray-500 editable">联系：hedan@goodideamedia.com</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="page-number" id="pageNumber">1 / 12</div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ─── Data ───
+    const TOC_SLIDES = [
+      [2,'品牌基础','字体使用规范'],
+      [3,'运营节奏','发布日历 & 月报'],
+      [4,'流程规范','商务流程 & Campaign'],
+      [5,'01 · Reactive','赛事实时跟进'],
+      [6,'02 · 推文','公众号发布流程'],
+      [7,'03 · 多平台','平台发布指南'],
+      [8,'04 · 互动 & 风格','Hijack & 内容风格'],
+      [9,'工具 🔧','运营后台入口'],
+      [10,'工具 🔧','OA & 推文加参'],
+      [11,'资源 📚','学习 & 参考资料'],
+    ];
+
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+    const pageNumber = document.getElementById('pageNumber');
+    const editHint = document.getElementById('editHint');
+    const editBtn = document.getElementById('editBtn');
+    const editBtnIcon = document.getElementById('editBtnIcon');
+    const editBtnText = document.getElementById('editBtnText');
+    const authStatus = document.getElementById('authStatus');
+    const toast = document.getElementById('toast');
+    const tocList = document.getElementById('tocList');
+    const swipeHint = document.getElementById('swipeHint');
+    let currentSlide = 0, editMode = false, toastTimer = null;
+    let editApproved = false, swipeTimer = null;
+
+    // ─── TOC (excludes cover & ending) ───
+    TOC_SLIDES.forEach(([idx, tag, title]) => {
+      const li = document.createElement('li');
+      li.className = 'toc-item';
+      li.dataset.index = idx;
+      li.innerHTML = `<div class="toc-num">${idx}</div><div class="toc-info"><div class="toc-tag">${tag}</div><div class="toc-title">${title}</div></div>`;
+      li.addEventListener('click', () => { goToSlide(idx-1); hideTOC(); });
+      tocList.appendChild(li);
+    });
+
+    // ─── Progress dots ───
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'progress-dot';
+      d.addEventListener('click', () => goToSlide(i));
+      progressBar.appendChild(d);
+    });
+
+    function updateSlides() {
+      slides.forEach((s, i) => {
+        s.classList.remove('active', 'prev');
+        if (i === currentSlide) s.classList.add('active');
+        else if (i < currentSlide) s.classList.add('prev');
+      });
+      document.querySelectorAll('.progress-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+      pageNumber.textContent = `${currentSlide+1} / ${slides.length}`;
+      // Highlight current in TOC
+      document.querySelectorAll('.toc-item').forEach(item => {
+        const idx = parseInt(item.dataset.index);
+        item.classList.toggle('active', idx-1 === currentSlide);
+      });
+      // Hide swipe hint after first swipe
+      if (swipeHint && swipeHint.style.opacity !== '0') {
+        if (currentSlide > 0) { swipeHint.style.opacity = '0'; }
+      }
+    }
+
+    function nextSlide() { if (currentSlide < slides.length-1) { currentSlide++; updateSlides(); } }
+    function prevSlide() { if (currentSlide > 0) { currentSlide--; updateSlides(); } }
+    function goToSlide(i) { currentSlide = i; updateSlides(); }
+
+    // ─── Touch Swipe (horizontal) ───
+    let touch = { startX: 0, startY: 0, startTime: 0, swiped: false };
+    document.addEventListener('touchstart', e => {
+      touch.startX = e.touches[0].clientX;
+      touch.startY = e.touches[0].clientY;
+      touch.startTime = Date.now();
+      touch.swiped = false;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+      if (touch.swiped) return;
+      const dx = e.touches[0].clientX - touch.startX;
+      const dy = e.touches[0].clientY - touch.startY;
+      // Lock to horizontal if horizontal movement dominates
+      if (Math.abs(dx) > Math.abs(dy) * 1.5) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    document.addEventListener('touchend', e => {
+      if (touch.swiped) return;
+      const dx = touch.startX - e.changedTouches[0].clientX;
+      const dy = touch.startY - e.changedTouches[0].clientY;
+      const elapsed = Date.now() - touch.startTime;
+      // Require: horizontal > 40px AND horizontal > vertical*1.2 AND fast enough
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2 && elapsed < 500) {
+        touch.swiped = true;
+        dx > 0 ? nextSlide() : prevSlide();
+      }
+    }, { passive: true });
+
+    // ─── Keyboard ───
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+      else if (e.key === 'Escape') { hideTOC(); hidePerm(); }
+    });
+
+    // ─── Edit Permission ───
+    const ADMIN_KEY = 'adidas_admin_approved';
+    const ADMIN_PWD_KEY = 'adidas_admin_pwd';
+    const defaultPwd = 'adidas2026';
+    if (!localStorage.getItem(ADMIN_PWD_KEY)) localStorage.setItem(ADMIN_PWD_KEY, defaultPwd);
+
+    function checkApproval() {
+      editApproved = localStorage.getItem(ADMIN_KEY) === 'true';
+      updateEditUI();
+    }
+
+    function updateEditUI() {
+      if (editApproved) {
+        editBtn.className = 'edit-toggle editable';
+        editBtnIcon.textContent = '✎';
+        editBtnText.textContent = '编辑';
+        authStatus.textContent = '✓ 管理员';
+        authStatus.className = 'auth-status approved';
+      } else {
+        editBtn.className = 'edit-toggle locked';
+        editBtnIcon.textContent = '🔒';
+        editBtnText.textContent = '申请授权';
+        authStatus.textContent = '🔒';
+        authStatus.className = 'auth-status';
+        if (editMode) toggleEditMode(false);
+      }
+    }
+
+    function handleEditClick() {
+      if (editApproved) { toggleEditMode(!editMode); }
+      else { showPermModal('apply'); }
+    }
+
+    function toggleEditMode(on) {
+      editMode = on;
+      editBtn.classList.toggle('active', on);
+      editHint.classList.toggle('show', on);
+      document.querySelectorAll('.editable').forEach(el => el.contentEditable = on);
+      showToast(on ? '✎ 编辑模式已开启' : '🔒 编辑模式已关闭');
+    }
+
+    // ─── Permission Modal ───
+    function showPermModal(view) {
+      const overlay = document.getElementById('permOverlay');
+      const container = document.getElementById('permView');
+      overlay.classList.add('show');
+
+      if (view === 'apply') renderApplyView(container);
+      else if (view === 'admin') renderAdminView(container);
+    }
+
+    function hidePerm() { document.getElementById('permOverlay').classList.remove('show'); }
+
+    function renderApplyView(container) {
+      const req = (() => { try { return JSON.parse(localStorage.getItem('adidas_edit_request')); } catch(e) { return null; } })();
+      let statusHtml = '';
+      let disabled = false;
+      if (req) {
+        if (req.status === 'pending') { statusHtml = '<div class="apply-status" style="font-size:.75rem;color:#fcd34d;text-align:center;padding:.5rem 0">⏳ 申请已提交，等待审批</div>'; disabled = true; }
+        else if (req.status === 'approved') { statusHtml = '<div style="font-size:.75rem;color:#6ee7b7;text-align:center;padding:.5rem 0">✅ 已通过审批</div>'; disabled = true; }
+        else if (req.status === 'denied') { statusHtml = '<div style="font-size:.75rem;color:#fca5a5;text-align:center;padding:.5rem 0">❌ 申请被拒绝，可重新提交</div>'; }
+      }
+      container.innerHTML = `
+        <div class="modal-title">🔒 申请编辑权限</div>
+        <div class="form-group"><label class="form-label">姓名</label><input class="form-input" id="fName" placeholder="请输入姓名" maxlength="20"></div>
+        <div class="form-group"><label class="form-label">邮箱</label><input class="form-input" id="fEmail" placeholder="请输入邮箱" type="email"></div>
+        <div class="form-group"><label class="form-label">申请理由</label><input class="form-input" id="fReason" placeholder="例如：需要更新品牌资料" maxlength="100"></div>
+        <button class="btn-primary" id="fSubmit" onclick="doApply()" ${disabled?'disabled':''}>提交申请</button>
+        ${statusHtml}
+        <div class="divider"></div>
+        <div class="admin-link" onclick="showPermModal('admin')">🔐 我是管理员，点击验证</div>
+      `;
+    }
+
+    function renderAdminView(container) {
+      container.innerHTML = `
+        <div class="modal-title">🔐 管理员验证</div>
+        <div class="form-group"><label class="form-label">审批密码</label><input class="form-input" id="aPwd" type="password" placeholder="输入管理员密码" style="font-size:.8rem"></div>
+        <button class="btn-primary" onclick="doAdminLogin()" style="margin-bottom:.8rem">验证身份</button>
+        <div id="aReqs"></div>
+        <div class="divider"></div>
+        <div class="admin-link" onclick="showPermModal('apply')">← 返回申请页面</div>
+      `;
+    }
+
+    window.doApply = function() {
+      const name = document.getElementById('fName').value.trim();
+      const email = document.getElementById('fEmail').value.trim();
+      const reason = document.getElementById('fReason').value.trim();
+      if (!name || !email || !reason) { showToast('⚠️ 请填写完整信息'); return; }
+      localStorage.setItem('adidas_edit_request', JSON.stringify({ name, email, reason, time: new Date().toISOString(), status: 'pending' }));
+      showToast('✅ 申请已提交，等待管理员审批');
+      document.getElementById('fSubmit').disabled = true;
+      document.getElementById('fSubmit').textContent = '已提交';
+    };
+
+    window.doAdminLogin = function() {
+      const pwd = document.getElementById('aPwd').value.trim();
+      const stored = localStorage.getItem(ADMIN_PWD_KEY);
+      if (pwd === stored) {
+        localStorage.setItem(ADMIN_KEY, 'true');
+        editApproved = true;
+        updateEditUI();
+        hidePerm();
+        showToast('✅ 管理员验证成功，可编辑');
+        renderAdminReqs();
+      } else {
+        showToast('❌ 密码错误');
+      }
+    };
+
+    function renderAdminReqs() {
+      const container = document.getElementById('aReqs');
+      if (!container) return;
+      const req = (() => { try { return JSON.parse(localStorage.getItem('adidas_edit_request')); } catch(e) { return null; } })();
+      if (!req) { container.innerHTML = '<div style="font-size:.75rem;color:rgba(255,255,255,.3);text-align:center">暂无待审批申请</div>'; return; }
+      if (req.status === 'approved') { container.innerHTML = '<div style="font-size:.75rem;color:#6ee7b7;text-align:center">✅ 已批准</div>'; return; }
+      if (req.status === 'denied') { container.innerHTML = '<div style="font-size:.75rem;color:#fca5a5;text-align:center">❌ 已拒绝</div>'; return; }
+      container.innerHTML = `<div class="req-item"><div class="req-info"><div class="req-name">${req.name}</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">${req.email}</div><div class="req-reason">${req.reason}</div></div><div class="req-actions"><button class="btn-sm btn-approve" onclick="doApprove()">批准</button><button class="btn-sm btn-deny" onclick="doDeny()">拒绝</button></div></div>`;
+    }
+
+    window.doApprove = function() {
+      const r = JSON.parse(localStorage.getItem('adidas_edit_request'));
+      r.status = 'approved';
+      localStorage.setItem('adidas_edit_request', JSON.stringify(r));
+      localStorage.setItem(ADMIN_KEY, 'true');
+      editApproved = true;
+      updateEditUI();
+      renderAdminReqs();
+      hidePerm();
+      showToast('✅ 已批准编辑权限');
+    };
+
+    window.doDeny = function() {
+      const r = JSON.parse(localStorage.getItem('adidas_edit_request'));
+      r.status = 'denied';
+      localStorage.setItem('adidas_edit_request', JSON.stringify(r));
+      renderAdminReqs();
+      showToast('❌ 已拒绝');
+    };
+
+    // ─── Toast ───
+    function showToast(msg) {
+      toast.textContent = msg; toast.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // ─── TOC show/hide ───
+    function showTOC() { document.getElementById('tocOverlay').classList.add('show'); }
+    function hideTOC() { document.getElementById('tocOverlay').classList.remove('show'); }
+
+    // ─── Auto-save ───
+    function saveContent() {
+      const d = {};
+      document.querySelectorAll('.editable').forEach((el,i) => { d['e_'+i] = el.innerHTML; });
+      localStorage.setItem('adidas_pb', JSON.stringify(d));
+    }
+    setInterval(() => { if (editMode) saveContent(); }, 30000);
+    window.addEventListener('beforeunload', () => { if (editMode) saveContent(); });
+
+    // ─── Restore saved content ───
+    try {
+      const s = localStorage.getItem('adidas_pb');
+      if (s) { const d = JSON.parse(s); document.querySelectorAll('.editable').forEach((el,i) => { const k='e_'+i; if(d[k]) el.innerHTML = d[k]; }); }
+    } catch(e) {}
+
+    // ─── Init ───
+    checkApproval();
+
+    // Auto-hide swipe hint after 5s
+    setTimeout(() => { if (swipeHint) swipeHint.style.opacity = '0'; }, 6000);
+
+    console.log('adidas Social Playbook | ☰ 目录(无封面/封底) | ← → 翻页 | 触摸左右滑动');
+  </script>
+</body>
+</html>
