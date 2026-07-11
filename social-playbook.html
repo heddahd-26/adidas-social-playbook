@@ -2,722 +2,795 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <title>adidas Social Playbook</title>
-  <link href="https://fonts.loli.net/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-  <link href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#000;
-      --surface:#0d0d0d;
-      --surface-rise:#141414;
-      --border:rgba(255,255,255,.06);
-      --border-hover:rgba(255,255,255,.1);
-      --text:#fff;
-      --text-dim:rgba(255,255,255,.5);
-      --text-dimmer:rgba(255,255,255,.25);
-      --accent:#1a8a6a;
-      --accent-light:rgba(26,138,106,.12);
-      --accent-text:rgba(26,138,106,.7);
-      --radius:10px;
-      --radius-lg:16px;
-      --font-display:800;
-      --font-body:400;
+      /* Adidas Brand Colors */
+      --green-dark: #003d2e;
+      --green: #00b273;
+      --green-muted: rgba(0,178,115,.12);
+      --green-subtle: rgba(0,178,115,.06);
+
+      /* Surfaces */
+      --bg: #000;
+      --surface: #0a0a0a;
+      --surface-raised: #111;
+      --surface-hover: #1a1a1a;
+
+      /* Text */
+      --text: #fff;
+      --text-secondary: rgba(255,255,255,.55);
+      --text-tertiary: rgba(255,255,255,.25);
+      --text-quaternary: rgba(255,255,255,.12);
+
+      /* Borders */
+      --border: rgba(255,255,255,.06);
+      --border-hover: rgba(255,255,255,.1);
+
+      /* System */
+      --error: #f87171;
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+
+      /* Typography */
+      --font-display: 'Inter','Noto Sans SC',sans-serif;
+      --font-body: 'Noto Sans SC','Inter',sans-serif;
+
+      /* Easing */
+      --ease-spring: cubic-bezier(.34,1.56,.64,1);
+      --ease-out: cubic-bezier(.22,1,.36,1);
+      --ease-emph: cubic-bezier(.2,0,0,1);
     }
     *{margin:0;padding:0;box-sizing:border-box}
-    html,body{
-      font-family:'Noto Sans SC','Inter',sans-serif;
+    html,body{height:100%;width:100%;overflow:hidden;position:fixed;inset:0;-webkit-tap-highlight-color:transparent}
+    body{
+      font-family:var(--font-body);
       background:var(--bg);color:var(--text);
-      overflow:hidden;height:100%;width:100%;
-      position:fixed;inset:0;
-      -webkit-user-select:none;user-select:none;
-      -webkit-tap-highlight-color:transparent;
+      -webkit-user-select:none;user-select:none
     }
 
-    /* ── Container ── */
-    .slides-container{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+    /* ─── Slide Container ─── */
+    .stage{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);overflow:hidden}
     .slide{
-      position:absolute;left:50%;top:50%;
+      position:absolute;
+      left:50%;top:50%;
       width:92vmin;max-width:480px;
       height:calc(92vmin*16/9);max-height:96vh;
-      transform:translate(-50%,-50%) translateX(120%);
+      transform:translate(-50%,-50%) translateX(100%);
       display:flex;flex-direction:column;align-items:center;justify-content:center;
-      padding:clamp(1.2rem,4vmin,2.8rem) clamp(0.8rem,3vmin,2rem);
+      padding:clamp(1.2rem,4vmin,2.5rem) clamp(.8rem,3vmin,1.8rem);
       opacity:0;
-      transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .5s ease;
+      transition:transform .55s var(--ease-out),opacity .4s ease;
+      will-change:transform,opacity;
       background:var(--bg)
     }
     .slide.active{opacity:1;transform:translate(-50%,-50%) translateX(0)}
-    .slide.prev{opacity:0;transform:translate(-50%,-50%) translateX(-120%)}
+    .slide.prev{opacity:0;transform:translate(-50%,-50%) translateX(-100%)}
 
-    /* ── Ambient glow ── */
-    .ambient{
-      position:absolute;border-radius:50%;
-      filter:blur(120px);opacity:.12;pointer-events:none
+    /* ─── Ambient Glow ─── */
+    .glow{
+      position:absolute;border-radius:50%;filter:blur(120px);
+      opacity:.08;pointer-events:none;will-change:transform
     }
-    .a1{width:50vmin;height:50vmin;background:var(--accent);top:-15vmin;right:-10vmin;animation:drift1 25s ease-in-out infinite}
-    .a2{width:40vmin;height:40vmin;background:#3b82f6;bottom:-12vmin;left:-8vmin;animation:drift2 28s ease-in-out infinite}
-    .a3{width:30vmin;height:30vmin;background:var(--accent);top:50%;left:50%;transform:translate(-50%,-50%);animation:drift3 22s ease-in-out infinite}
-    @keyframes drift1{0%,100%{transform:translate(0,0)}33%{transform:translate(-5vmin,4vmin)}66%{transform:translate(4vmin,6vmin)}}
-    @keyframes drift2{0%,100%{transform:translate(0,0)}33%{transform:translate(5vmin,-4vmin)}66%{transform:translate(-4vmin,4vmin)}}
-    @keyframes drift3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+    .g1{width:50vmin;height:50vmin;background:var(--green);top:-15vmin;right:-10vmin;animation:drift1 30s ease-in-out infinite}
+    .g2{width:40vmin;height:40vmin;background:#3b82f6;bottom:-12vmin;left:-8vmin;animation:drift2 35s ease-in-out infinite}
+    .g3{width:35vmin;height:35vmin;background:var(--green);top:50%;left:50%;transform:translate(-50%,-50%);animation:drift3 28s ease-in-out infinite}
+    @keyframes drift1{0%,100%{transform:translate(0,0)}33%{transform:translate(-6vmin,5vmin)}66%{transform:translate(5vmin,7vmin)}}
+    @keyframes drift2{0%,100%{transform:translate(0,0)}33%{transform:translate(6vmin,-5vmin)}66%{transform:translate(-5vmin,5vmin)}}
+    @keyframes drift3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.2)}}
 
-    .slide-content{
+    /* ─── Slide Content ─── */
+    .frame{
       position:relative;z-index:10;text-align:center;
-      width:100%;height:100%;
+      width:100%;height:100%;display:flex;flex-direction:column;align-items:center;
       overflow-y:auto;-webkit-overflow-scrolling:touch;
-      scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08) transparent;
-      display:flex;flex-direction:column;align-items:center;
+      scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.06) transparent;
     }
-    .slide-content::-webkit-scrollbar{width:2px}
-    .slide-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+    .frame::-webkit-scrollbar{width:2px}
+    .frame::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
 
-    /* ── Adidas-style components ── */
-    .badge{
-      display:inline-block;
-      font-size:clamp(.45rem,1.4vmin,.55rem);
+    .eyebrow{
+      font-size:clamp(.45rem,1.3vmin,.55rem);
       font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-      color:var(--accent-text);
-      padding:.25rem 0;margin-bottom:clamp(.6rem,2vmin,1.2rem);
-      border-bottom:1px solid var(--accent-light);
+      color:var(--green);opacity:.5;
+      margin-bottom:clamp(.6rem,2vmin,1.2rem);flex-shrink:0
+    }
+    .h1{
+      font-family:var(--font-display);
+      font-size:clamp(1.8rem,6vmin,2.8rem);
+      font-weight:800;line-height:1.08;letter-spacing:-.03em;
       flex-shrink:0
     }
-    .title-main{
-      font-size:clamp(1.8rem,6vmin,2.8rem);
-      font-weight:var(--font-display);
-      line-height:1.08;letter-spacing:-.03em;
-      margin-bottom:clamp(.3rem,1vmin,.6rem);flex-shrink:0
-    }
-    .title-sec{
-      font-size:clamp(1.2rem,4vmin,1.6rem);
-      font-weight:var(--font-display);
-      line-height:1.15;letter-spacing:-.02em;
+    .h2{
+      font-family:var(--font-display);
+      font-size:clamp(1.15rem,3.8vmin,1.5rem);
+      font-weight:700;line-height:1.2;letter-spacing:-.02em;
       margin-bottom:clamp(.6rem,2vmin,1rem);text-align:left;width:100%;flex-shrink:0
     }
-    .subtitle{
-      font-size:clamp(.75rem,2.2vmin,.95rem);
-      font-weight:300;color:var(--text-dim);line-height:1.6;flex-shrink:0
+    .p1{
+      font-size:clamp(.75rem,2.2vmin,.9rem);
+      font-weight:300;color:var(--text-secondary);line-height:1.6;
+      flex-shrink:0
     }
-    .divider{
+    .rule{
       width:clamp(28px,4vmin,44px);height:2px;
-      background:var(--accent);opacity:.3;
+      background:var(--green);opacity:.2;
       border-radius:1px;margin:clamp(.6rem,2vmin,1rem) auto;flex-shrink:0
     }
 
+    /* ─── Card ─── */
     .card{
-      background:var(--surface);
+      background:var(--surface-raised);
       border:1px solid var(--border);
       border-radius:var(--radius);
-      padding:clamp(.5rem,1.6vmin,.85rem) clamp(.6rem,2vmin,1.1rem);
-      margin-bottom:clamp(.3rem,.8vmin,.55rem);
+      padding:clamp(.5rem,1.5vmin,.8rem) clamp(.55rem,1.8vmin,1rem);
+      margin-bottom:clamp(.3rem,.8vmin,.5rem);
       text-align:left;width:100%;flex-shrink:0;
-      transition:border-color .25s,background .25s
+      transition:all .2s var(--ease-out)
     }
-    .card:hover,.card:focus-within{border-color:var(--border-hover);background:var(--surface-rise)}
-    .card-label{
-      font-size:clamp(.5rem,1.4vmin,.6rem);
+    .card:hover,.card:focus-within{border-color:var(--border-hover);background:var(--surface-hover)}
+    .card-l{
+      font-size:clamp(.45rem,1.2vmin,.55rem);
       font-weight:600;letter-spacing:.06em;text-transform:uppercase;
-      color:var(--text-dimmer);margin-bottom:clamp(.15rem,.4vmin,.3rem)
+      color:var(--text-tertiary);margin-bottom:clamp(.1rem,.3vmin,.2rem)
     }
-    .card-body{
-      font-size:clamp(.7rem,2vmin,.85rem);
-      font-weight:var(--font-body);color:var(--text-dim);line-height:1.55
+    .card-b{
+      font-size:clamp(.65rem,1.9vmin,.8rem);
+      font-weight:400;color:var(--text-secondary);line-height:1.55
     }
-    .card-body strong{color:var(--text);font-weight:600}
-    .card-body .warn{color:#f87171}
-    .card-body .note{color:var(--accent-text)}
+    .card-b s{color:var(--text-tertiary);text-decoration:none;opacity:.5}
+    .card-b .accent{color:var(--green)}
+    .card-b .warn{color:var(--error)}
+    .card-b .tag{display:inline-block;font-size:clamp(.5rem,1.3vmin,.6rem);font-weight:600;padding:.1em .5em;border-radius:3px;background:var(--green-muted);color:var(--green)}
+    .card-b .tag-red{background:rgba(248,113,113,.1);color:var(--error)}
 
-    .link{
-      color:var(--accent-text);text-decoration:none;
-      border-bottom:1px solid rgba(26,138,106,.15);
-      transition:all .2s;word-break:break-all
-    }
-    .link:hover{color:var(--accent);border-color:var(--accent)}
-    .link-row{margin-top:clamp(.2rem,.5vmin,.35rem);font-size:clamp(.55rem,1.5vmin,.65rem);display:flex;align-items:center;gap:.35rem}
-    .link-icon{font-size:.55rem;opacity:.4;flex-shrink:0}
+    .link-row{margin-top:clamp(.2rem,.5vmin,.35rem);font-size:clamp(.5rem,1.4vmin,.6rem);display:flex;align-items:center;gap:.3rem}
+    .link{color:var(--green);text-decoration:none;border-bottom:1px solid rgba(0,178,115,.15);transition:all .2s;word-break:break-all}
+    .link:hover{color:#00d48a;border-color:rgba(0,212,138,.3)}
 
-    .bullet{margin-bottom:clamp(.25rem,.6vmin,.45rem);display:flex;align-items:flex-start;gap:.5rem;text-align:left;width:100%}
-    .bullet-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:.4rem}
-    .step-num{
-      font-size:clamp(1.3rem,4.5vmin,2rem);
-      font-weight:900;color:rgba(26,138,106,.08);
-      line-height:1;margin-bottom:clamp(.1rem,.3vmin,.15rem);text-align:left;width:100%
-    }
-    .editable{outline:none;transition:background .2s;border-radius:2px;padding:0 1px}
-    .editable:focus{background:rgba(255,255,255,.03);box-shadow:0 0 0 1px rgba(26,138,106,.15);-webkit-user-select:text;user-select:text}
+    .step{font-size:clamp(1.2rem,4vmin,1.8rem);font-weight:800;color:rgba(0,178,115,.06);line-height:1;margin-bottom:clamp(.05rem,.2vmin,.1rem);text-align:left;width:100%}
+    .dot-row{margin-bottom:clamp(.2rem,.5vmin,.4rem);display:flex;align-items:flex-start;gap:.5rem;text-align:left;width:100%}
+    .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:.35rem}
+    .dot-g{background:var(--green)}
+    .dot-b{background:rgba(59,130,246,.4)}
+    .dot-c{background:rgba(6,182,212,.4)}
+    .dot-a{background:rgba(245,158,11,.4)}
+    .dot-t{background:rgba(16,185,129,.4)}
 
-    /* ── Top Bar ── */
-    .top-bar{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:clamp(4px,1.2vmin,10px) clamp(8px,2vmin,16px);pointer-events:none}
-    .top-bar>*{pointer-events:auto}
+    .editable{outline:none;border-radius:2px;transition:background .15s;padding:0 1px}
+    .editable:focus{
+      background:rgba(0,178,115,.03);
+      box-shadow:0 0 0 1px rgba(0,178,115,.1);
+      -webkit-user-select:text;user-select:text
+    }
+
+    /* ─── Top Bar ─── */
+    .bar{
+      position:fixed;top:0;left:0;right:0;z-index:200;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:clamp(4px,1vmin,10px) clamp(8px,2vmin,16px);
+      pointer-events:none;
+      background:linear-gradient(180deg,rgba(0,0,0,.6),transparent);
+      padding-bottom:clamp(12px,3vmin,24px)
+    }
+    .bar>*{pointer-events:auto}
+    .btn-group{display:flex;align-items:center;gap:clamp(3px,.6vmin,6px)}
     .bar-btn{
-      display:flex;align-items:center;gap:4px;
-      background:var(--surface);border:1px solid var(--border);
-      border-radius:8px;padding:clamp(3px,.8vmin,5px) clamp(6px,1.5vmin,10px);
-      color:var(--text-dimmer);font-size:clamp(.5rem,1.4vmin,.65rem);
-      cursor:pointer;transition:all .2s;font-family:inherit
+      display:flex;align-items:center;gap:3px;
+      height:clamp(28px,6vmin,34px);
+      padding:0 clamp(7px,1.5vmin,12px);
+      background:var(--surface-raised);border:1px solid var(--border);
+      border-radius:var(--radius-sm);
+      color:var(--text-tertiary);
+      font-size:clamp(.5rem,1.3vmin,.6rem);font-weight:500;
+      cursor:pointer;transition:all .2s;font-family:inherit;white-space:nowrap
     }
-    .bar-btn:hover{background:var(--surface-rise);color:var(--text);border-color:var(--border-hover)}
-    .bar-group{display:flex;align-items:center;gap:clamp(4px,1vmin,8px)}
-    .auth-badge{font-size:clamp(.45rem,1.2vmin,.55rem);color:var(--text-dimmer);padding:clamp(2px,.5vmin,4px) clamp(4px,1vmin,8px);border-radius:6px;background:var(--surface)}
-    .auth-badge.ok{color:var(--accent-text);background:var(--accent-light)}
+    .bar-btn:hover{background:var(--surface-hover);color:var(--text-secondary);border-color:var(--border-hover)}
+    .bar-btn:active{transform:scale(.96)}
+    .badge-auth{
+      height:clamp(22px,4vmin,28px);padding:0 clamp(6px,1vmin,10px);
+      display:grid;place-items:center;
+      font-size:clamp(.45rem,1.1vmin,.55rem);font-weight:500;
+      color:var(--text-tertiary);background:var(--surface-raised);
+      border:1px solid var(--border);border-radius:var(--radius-sm)
+    }
+    .badge-auth.ok{color:var(--green);border-color:rgba(0,178,115,.15);background:var(--green-muted)}
 
-    .edit-toggle{composes:bar-btn;border-color:transparent}
-    .edit-toggle.editable{color:var(--accent-text);border-color:var(--accent-light)}
-    .edit-toggle.editable:hover{border-color:rgba(26,138,106,.3)}
-    .edit-toggle.active{background:var(--accent-light);color:var(--accent)}
-
-    .edit-hint{position:fixed;top:clamp(32px,6vmin,48px);right:clamp(8px,2vmin,14px);z-index:200;font-size:clamp(.45rem,1.2vmin,.55rem);color:var(--text-dimmer);text-align:right;opacity:0;transition:opacity .5s;pointer-events:none}
+    .edit-badge{
+      composes:bar-btn;
+      border-color:transparent;background:transparent
+    }
+    .edit-badge.on{color:var(--green);background:var(--green-muted);border-color:rgba(0,178,115,.15)}
+    .edit-hint{
+      position:fixed;top:clamp(36px,6vmin,52px);right:clamp(8px,2vmin,14px);
+      z-index:199;font-size:clamp(.45rem,1.1vmin,.55rem);color:var(--text-tertiary);
+      opacity:0;transition:opacity .5s;pointer-events:none
+    }
     .edit-hint.show{opacity:1}
 
-    /* ── Verify ── */
-    .verify-overlay{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .6s,transform .6s}
-    .verify-overlay.hidden{opacity:0;transform:scale(1.03);pointer-events:none}
-    .verify-box{position:relative;z-index:10;text-align:center;max-width:380px;width:88%;padding:clamp(1.5rem,4vmin,2.5rem)}
-    .verify-input{width:100%;padding:clamp(.6rem,2vmin,.8rem) clamp(.7rem,2.2vmin,1rem);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:clamp(.85rem,2.5vmin,.95rem);font-family:inherit;outline:none;transition:all .3s;text-align:center}
-    .verify-input:focus{border-color:rgba(26,138,106,.3)}
-    .verify-input::placeholder{color:var(--text-dimmer);font-size:clamp(.75rem,2vmin,.85rem)}
-    .verify-btn{width:100%;padding:clamp(.6rem,2vmin,.8rem);background:var(--accent-light);border:1px solid rgba(26,138,106,.2);border-radius:var(--radius);color:var(--accent);font-size:clamp(.8rem,2.3vmin,.9rem);font-weight:600;cursor:pointer;transition:all .3s;font-family:inherit}
-    .verify-btn:hover{background:rgba(26,138,106,.2)}
-    .verify-err{font-size:.7rem;color:#f87171;margin-top:.4rem;min-height:1.1rem}
-    .verify-hint{font-size:clamp(.5rem,1.4vmin,.6rem);color:var(--text-dimmer);margin-top:1rem;opacity:.4}
-    .verify-logout{font-size:clamp(.5rem,1.4vmin,.6rem);color:var(--text-dimmer);cursor:pointer;margin-top:.5rem;background:none;border:none;font-family:inherit;opacity:.3;transition:opacity .2s}
-    .verify-logout:hover{opacity:.6}
-    .user-badge{position:fixed;top:clamp(4px,1vmin,10px);left:50%;transform:translateX(-50%);z-index:150;font-size:clamp(.45rem,1.2vmin,.55rem);color:var(--text-dimmer);background:var(--surface);border:1px solid var(--border);padding:clamp(2px,.5vmin,3px) clamp(8px,1.5vmin,14px);border-radius:20px;pointer-events:none;white-space:nowrap;opacity:.7}
+    .user-tag{
+      position:fixed;top:clamp(4px,.8vmin,8px);left:50%;transform:translateX(-50%);
+      z-index:150;font-size:clamp(.45rem,1.2vmin,.55rem);
+      color:var(--text-quaternary);pointer-events:none;white-space:nowrap
+    }
 
-    /* ── Modal ── */
-    .modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s}
+    /* ─── Verify ─── */
+    .v-wrap{
+      position:fixed;inset:0;z-index:999;background:var(--bg);
+      display:grid;place-items:center;
+      transition:opacity .6s,transform .6s var(--ease-out)
+    }
+    .v-wrap.hide{opacity:0;transform:scale(1.02);pointer-events:none}
+    .v-box{position:relative;z-index:10;text-align:center;max-width:380px;width:88%;padding:clamp(1.5rem,4vmin,2.5rem)}
+    .v-inp{
+      width:100%;padding:clamp(.6rem,2vmin,.8rem);
+      background:var(--surface-raised);border:1px solid var(--border);
+      border-radius:var(--radius);color:var(--text);
+      font-size:clamp(.85rem,2.5vmin,.95rem);font-family:inherit;
+      text-align:center;outline:none;transition:border-color .25s
+    }
+    .v-inp:focus{border-color:rgba(0,178,115,.3)}
+    .v-inp::placeholder{color:var(--text-quaternary)}
+    .v-btn{
+      width:100%;padding:clamp(.6rem,2vmin,.8rem);
+      background:var(--green-muted);border:1px solid rgba(0,178,115,.15);
+      border-radius:var(--radius);color:var(--green);
+      font-size:clamp(.8rem,2.3vmin,.9rem);font-weight:600;
+      cursor:pointer;transition:all .25s;font-family:inherit
+    }
+    .v-btn:hover{background:rgba(0,178,115,.2)}
+    .v-btn:active{transform:scale(.97)}
+    .v-err{font-size:.7rem;color:var(--error);margin-top:.4rem;min-height:1.1rem}
+    .v-hint{font-size:clamp(.5rem,1.3vmin,.6rem);color:var(--text-quaternary);margin-top:1rem}
+    .v-out{font-size:clamp(.5rem,1.3vmin,.6rem);color:var(--text-quaternary);cursor:pointer;margin-top:.5rem;background:none;border:none;font-family:inherit;opacity:.3;transition:opacity .2s}
+    .v-out:hover{opacity:.6}
+
+    /* ─── Modal ─── */
+    .modal-overlay{
+      position:fixed;inset:0;z-index:500;
+      background:rgba(0,0,0,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      display:grid;place-items:center;
+      opacity:0;pointer-events:none;transition:opacity .3s
+    }
     .modal-overlay.show{opacity:1;pointer-events:auto}
-    .modal-box{background:#0d0d0d;border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.2rem,3.5vmin,2rem);max-width:420px;width:90%;max-height:80vh;overflow-y:auto;position:relative;-webkit-overflow-scrolling:touch}
-    .modal-close{position:absolute;top:clamp(8px,2vmin,12px);right:clamp(10px,2.5vmin,16px);font-size:1.1rem;color:var(--text-dimmer);cursor:pointer;transition:.2s;background:none;border:none;font-family:inherit}
-    .modal-close:hover{color:var(--text)}
-    .modal-title{font-size:clamp(.95rem,3vmin,1.1rem);font-weight:700;margin-bottom:1rem;text-align:center}
+    .modal-box{
+      background:var(--surface-raised);border:1px solid var(--border);
+      border-radius:var(--radius-xl);padding:clamp(1.2rem,3.5vmin,2rem);
+      max-width:420px;width:90%;max-height:80vh;overflow-y:auto;
+      position:relative;-webkit-overflow-scrolling:touch;
+      transform:scale(.95);transition:transform .35s var(--ease-out)
+    }
+    .modal-overlay.show .modal-box{transform:scale(1)}
+    .modal-x{
+      position:absolute;top:clamp(8px,2vmin,12px);right:clamp(10px,2.5vmin,16px);
+      font-size:1.1rem;color:var(--text-tertiary);cursor:pointer;
+      background:none;border:none;font-family:inherit;transition:color .2s;
+      width:32px;height:32px;border-radius:8px;display:grid;place-items:center
+    }
+    .modal-x:hover{color:var(--text);background:var(--surface-hover)}
+    .modal-t{font-size:clamp(.95rem,3vmin,1.1rem);font-weight:700;margin-bottom:1rem;text-align:center}
 
-    .toc-list{list-style:none}
-    .toc-item{display:flex;align-items:center;gap:12px;padding:clamp(6px,1.5vmin,10px) clamp(8px,2vmin,12px);border-radius:var(--radius);cursor:pointer;transition:all .2s;border:1px solid transparent;margin-bottom:3px}
-    .toc-item:hover{background:var(--surface-rise);border-color:var(--border)}
-    .toc-num{width:clamp(22px,6vmin,28px);height:clamp(22px,6vmin,28px);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:clamp(.6rem,1.6vmin,.7rem);font-weight:600;flex-shrink:0;background:var(--surface);color:var(--text-dimmer)}
-    .toc-item.active .toc-num{background:var(--accent-light);color:var(--accent)}
-    .toc-item.active .toc-title{color:var(--accent)}
-    .toc-info{flex:1;min-width:0}
-    .toc-tag{font-size:clamp(.45rem,1.2vmin,.55rem);font-weight:600;text-transform:uppercase;color:var(--text-dimmer);letter-spacing:.05em;opacity:.5}
-    .toc-title{font-size:clamp(.75rem,2vmin,.85rem);font-weight:500;margin-top:1px}
+    .toc-item{
+      display:flex;align-items:center;gap:clamp(8px,2vmin,12px);
+      padding:clamp(6px,1.5vmin,10px) clamp(8px,2vmin,12px);
+      border-radius:var(--radius);cursor:pointer;transition:all .2s;
+      border:1px solid transparent;margin-bottom:3px
+    }
+    .toc-item:hover{background:var(--surface-hover);border-color:var(--border)}
+    .toc-n{
+      width:clamp(22px,5vmin,28px);height:clamp(22px,5vmin,28px);
+      border-radius:var(--radius-sm);display:grid;place-items:center;
+      font-size:clamp(.6rem,1.5vmin,.7rem);font-weight:600;
+      background:var(--surface);color:var(--text-tertiary);flex-shrink:0
+    }
+    .toc-item.active .toc-n{background:var(--green-muted);color:var(--green)}
+    .toc-item.active .toc-t{color:var(--green)}
+    .toc-tg{font-size:clamp(.45rem,1.2vmin,.55rem);color:var(--text-tertiary);opacity:.5;letter-spacing:.04em;text-transform:uppercase}
+    .toc-t{font-size:clamp(.7rem,1.8vmin,.85rem);font-weight:500;margin-top:1px}
 
-    .form-group{margin-bottom:clamp(.6rem,2vmin,1rem)}
-    .form-label{font-size:clamp(.55rem,1.5vmin,.65rem);font-weight:600;color:var(--text-dimmer);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.3rem;display:block}
-    .form-input{width:100%;padding:clamp(.5rem,1.5vmin,.65rem) clamp(.6rem,1.8vmin,.8rem);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:clamp(.75rem,2vmin,.85rem);font-family:inherit;outline:none;transition:all .2s}
-    .form-input:focus{border-color:rgba(26,138,106,.3)}
-    .form-input::placeholder{color:rgba(255,255,255,.15)}
-    .form-input[readonly]{opacity:.5}
-    .form-btn{width:100%;padding:clamp(.55rem,1.8vmin,.7rem);background:var(--accent-light);border:1px solid rgba(26,138,106,.2);border-radius:var(--radius);color:var(--accent);font-size:clamp(.75rem,2vmin,.85rem);font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
-    .form-btn:hover{background:rgba(26,138,106,.2)}
-    .form-btn:disabled{opacity:.25;cursor:not-allowed}
-    .divider{height:1px;background:var(--border);margin:clamp(.6rem,2vmin,1rem) 0}
-    .admin-link{text-align:center;font-size:clamp(.5rem,1.4vmin,.6rem);color:var(--text-dimmer);cursor:pointer;display:block;margin-top:.5rem;opacity:.4;transition:opacity .2s}
-    .admin-link:hover{opacity:.7}
+    .f-group{margin-bottom:clamp(.6rem,2vmin,1rem)}
+    .f-l{
+      font-size:clamp(.5rem,1.4vmin,.6rem);font-weight:600;
+      color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.04em;
+      margin-bottom:.25rem;display:block
+    }
+    .f-i{
+      width:100%;padding:clamp(.5rem,1.5vmin,.6rem) clamp(.55rem,1.6vmin,.75rem);
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius-sm);color:var(--text);
+      font-size:clamp(.75rem,2vmin,.85rem);font-family:inherit;
+      outline:none;transition:border-color .2s
+    }
+    .f-i:focus{border-color:rgba(0,178,115,.25)}
+    .f-i[readonly]{opacity:.4}
+    .f-btn{
+      width:100%;padding:clamp(.55rem,1.5vmin,.65rem);
+      background:var(--green-muted);border:1px solid rgba(0,178,115,.15);
+      border-radius:var(--radius);color:var(--green);
+      font-size:clamp(.75rem,2vmin,.85rem);font-weight:600;
+      cursor:pointer;transition:all .2s;font-family:inherit
+    }
+    .f-btn:hover{background:rgba(0,178,115,.2)}
+    .f-btn:active{transform:scale(.97)}
+    .f-btn:disabled{opacity:.25;cursor:not-allowed}
+    .f-hr{height:1px;background:var(--border);margin:clamp(.6rem,2vmin,1rem) 0}
+    .f-link{text-align:center;font-size:clamp(.5rem,1.3vmin,.6rem);color:var(--text-tertiary);cursor:pointer;display:block;margin-top:.5rem;opacity:.4;transition:opacity .2s}
+    .f-link:hover{opacity:.7}
 
-    .progress-bar{position:fixed;bottom:clamp(10px,2.5vmin,18px);left:50%;transform:translateX(-50%);display:flex;gap:clamp(3px,.6vmin,4px);z-index:100}
-    .progress-dot{width:clamp(3px,.6vmin,4px);height:clamp(3px,.6vmin,4px);border-radius:50%;background:rgba(255,255,255,.12);cursor:pointer;transition:all .3s}
-    .progress-dot.active{background:var(--accent);transform:scale(1.6)}
-    .progress-dot:hover{background:rgba(255,255,255,.25)}
+    .req-item{display:flex;align-items:center;justify-content:space-between;padding:.5rem;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:.35rem}
+    .req-info{font-size:clamp(.6rem,1.6vmin,.7rem);line-height:1.5}
+    .req-n{font-weight:600;color:var(--text-secondary)}
+    .req-r{color:var(--text-tertiary);font-size:clamp(.5rem,1.3vmin,.6rem)}
+    .req-act{display:flex;gap:4px}
+    .btn-sm{
+      padding:3px 8px;border-radius:var(--radius-sm);
+      font-size:clamp(.5rem,1.2vmin,.6rem);font-weight:600;
+      cursor:pointer;border:none;font-family:inherit;transition:all .2s
+    }
+    .btn-sm:active{transform:scale(.94)}
+    .btn-ok{background:var(--green-muted);color:var(--green)}
+    .btn-ok:hover{background:rgba(0,178,115,.2)}
+    .btn-no{background:rgba(248,113,113,.1);color:var(--error)}
+    .btn-no:hover{background:rgba(248,113,113,.18)}
 
-    .page-num{position:fixed;bottom:clamp(28px,4vmin,38px);left:50%;transform:translateX(-50%);font-size:clamp(.5rem,1.3vmin,.6rem);color:var(--text-dimmer);z-index:100;opacity:.3;letter-spacing:.05em}
+    /* ─── Progress ─── */
+    .progress{
+      position:fixed;bottom:clamp(10px,2.5vmin,18px);left:50%;
+      transform:translateX(-50%);display:flex;gap:clamp(3px,.5vmin,4px);z-index:100
+    }
+    .p-dot{
+      width:clamp(3px,.5vmin,4px);height:clamp(3px,.5vmin,4px);
+      border-radius:50%;background:var(--text-quaternary);
+      cursor:pointer;transition:all .4s var(--ease-spring)
+    }
+    .p-dot.active{background:var(--green);transform:scale(1.6);box-shadow:0 0 8px rgba(0,178,115,.3)}
+    .p-dot:hover{background:rgba(255,255,255,.2)}
+    .p-num{
+      position:fixed;bottom:clamp(28px,4vmin,36px);left:50%;transform:translateX(-50%);
+      font-size:clamp(.5rem,1.2vmin,.6rem);color:var(--text-quaternary);z-index:100
+    }
 
-    .toast{position:fixed;bottom:clamp(56px,8vmin,72px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface-rise);border:1px solid var(--border);backdrop-filter:blur(12px);padding:clamp(.35rem,.8vmin,.5rem) clamp(.7rem,1.5vmin,1.2rem);border-radius:20px;font-size:clamp(.6rem,1.5vmin,.7rem);color:var(--text-dim);z-index:600;opacity:0;transition:all .4s cubic-bezier(.22,1,.36,1);white-space:nowrap;pointer-events:none}
+    .toast{
+      position:fixed;bottom:clamp(56px,8vmin,72px);left:50%;
+      transform:translateX(-50%) translateY(16px);
+      background:var(--surface-raised);border:1px solid var(--border);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      padding:clamp(.35rem,.8vmin,.5rem) clamp(.7rem,1.5vmin,1.2rem);
+      border-radius:20px;font-size:clamp(.55rem,1.4vmin,.65rem);color:var(--text-secondary);
+      z-index:600;opacity:0;transition:all .4s var(--ease-out);white-space:nowrap;pointer-events:none
+    }
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-    /* ── Upload Drop Zone ── */
-    .drop-zone{border:1.5px dashed var(--border);border-radius:var(--radius);padding:clamp(1rem,3vmin,2rem);text-align:center;cursor:pointer;transition:all .25s;margin-bottom:.6rem}
-    .drop-zone:hover,.drop-zone.dragover{border-color:rgba(26,138,106,.3);background:var(--accent-light)}
-    .drop-zone-icon{font-size:1.5rem;margin-bottom:.3rem;opacity:.3}
-    .drop-zone-text{font-size:clamp(.65rem,1.8vmin,.75rem);color:var(--text-dimmer)}
-    .file-item{display:flex;align-items:center;gap:8px;padding:clamp(.35rem,.8vmin,.5rem) clamp(.5rem,1.2vmin,.7rem);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:4px;font-size:clamp(.6rem,1.6vmin,.75rem)}
-    .file-icon{flex-shrink:0;opacity:.4}
-    .file-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-dim)}
-    .file-size{flex-shrink:0;color:var(--text-dimmer);font-size:clamp(.5rem,1.2vmin,.6rem)}
-    .file-del{flex-shrink:0;background:none;border:none;color:var(--text-dimmer);cursor:pointer;font-size:.8rem;padding:2px 4px;border-radius:4px;transition:all .2s;font-family:inherit}
-    .file-del:hover{color:#f87171;background:rgba(248,113,113,.1)}
-    .file-empty{padding:1rem;text-align:center;font-size:clamp(.6rem,1.6vmin,.7rem);color:var(--text-dimmer)}
+    /* ─── Upload ─── */
+    .drop{
+      border:1.5px dashed var(--border);border-radius:var(--radius);
+      padding:clamp(1rem,3vmin,1.8rem);text-align:center;cursor:pointer;
+      transition:all .25s;margin-bottom:.6rem
+    }
+    .drop:hover,.drop.drag{border-color:rgba(0,178,115,.3);background:var(--green-subtle)}
+    .drop-i{font-size:1.4rem;margin-bottom:.25rem;opacity:.25}
+    .drop-t{font-size:clamp(.6rem,1.6vmin,.7rem);color:var(--text-tertiary)}
+    .file-item{
+      display:flex;align-items:center;gap:6px;
+      padding:clamp(.3rem,.6vmin,.45rem) clamp(.4rem,1vmin,.6rem);
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius-sm);margin-bottom:3px;
+      font-size:clamp(.55rem,1.4vmin,.65rem)
+    }
+    .file-ico{flex-shrink:0;opacity:.35}
+    .file-n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-secondary)}
+    .file-sz{flex-shrink:0;color:var(--text-tertiary);font-size:clamp(.45rem,1.1vmin,.55rem)}
+    .file-del{
+      flex-shrink:0;background:none;border:none;color:var(--text-tertiary);
+      cursor:pointer;font-size:.75rem;padding:2px 4px;border-radius:4px;
+      transition:all .2s;font-family:inherit
+    }
+    .file-del:hover{color:var(--error);background:rgba(248,113,113,.1)}
+    .empty-state{padding:.8rem;text-align:center;font-size:clamp(.55rem,1.4vmin,.65rem);color:var(--text-quaternary)}
 
     @media(max-width:480px){
-      .slide{padding:clamp(.8rem,3vmin,1.2rem) clamp(.5rem,2vmin,.8rem)}
-      .card{padding:clamp(.35rem,1vmin,.55rem) clamp(.4rem,1.2vmin,.65rem);margin-bottom:clamp(.2rem,.5vmin,.35rem)}
-      .card-body{font-size:clamp(.6rem,1.8vmin,.7rem)}
-      .top-bar{padding:clamp(2px,.5vmin,6px) clamp(4px,1vmin,10px)}
-      .bar-btn{padding:clamp(2px,.5vmin,4px) clamp(4px,1vmin,8px);font-size:clamp(.45rem,1.2vmin,.55rem)}
-      .auth-badge{display:none}
+      .slide{padding:clamp(.6rem,2vmin,1rem) clamp(.4rem,1.5vmin,.7rem)}
+      .card{padding:clamp(.3rem,.8vmin,.5rem) clamp(.35rem,1vmin,.6rem);margin-bottom:clamp(.18rem,.4vmin,.3rem)}
+      .card-b{font-size:clamp(.6rem,1.7vmin,.7rem)}
+      .bar{padding:clamp(2px,.4vmin,6px) clamp(4px,1vmin,10px);padding-bottom:clamp(8px,2vmin,16px)}
+      .bar-btn{height:clamp(24px,5vmin,30px);padding:0 clamp(5px,1vmin,9px);font-size:clamp(.45rem,1.1vmin,.55rem)}
+      .badge-auth{display:none}
     }
     @media(max-height:500px){
       .slide{width:70vmin;height:calc(70vmin*16/9);max-height:88vh}
-      .card{padding:clamp(.2rem,.5vmin,.35rem) clamp(.25rem,.6vmin,.4rem);margin-bottom:clamp(.12rem,.25vmin,.2rem)}
-      .card-body{font-size:clamp(.5rem,1.2vmin,.6rem)}
-      .card-label{font-size:clamp(.4rem,1vmin,.5rem)}
-      .title-sec{font-size:clamp(.8rem,2.5vmin,1rem)!important;margin-bottom:clamp(.2rem,.5vmin,.4rem)!important}
-      .step-num{font-size:clamp(.9rem,2.5vmin,1.2rem)}
-      .top-bar{display:none}
+      .card{padding:clamp(.18rem,.4vmin,.3rem) clamp(.2rem,.5vmin,.35rem);margin-bottom:clamp(.1rem,.2vmin,.15rem)}
+      .card-b{font-size:clamp(.5rem,1.2vmin,.55rem)}
+      .card-l{font-size:clamp(.4rem,.8vmin,.45rem)}
+      .h2{font-size:clamp(.75rem,2.2vmin,.9rem)!important;margin-bottom:clamp(.15rem,.3vmin,.3rem)!important}
+      .step{font-size:clamp(.8rem,2vmin,1rem)}
+      .bar{display:none}
+      .p-num{bottom:clamp(14px,2vmin,20px)}
+      .progress{bottom:clamp(6px,1vmin,12px)}
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══ Email Verify ═══ -->
-  <div class="verify-overlay" id="verifyOverlay">
-    <div class="ambient a1"></div>
-    <div class="ambient a2"></div>
-    <div class="verify-box">
-      <div class="badge" style="text-align:center;border-bottom:none;opacity:.5">Internal · Confidential</div>
-      <h1 class="title-main" style="font-size:clamp(1.8rem,7vmin,2.5rem)">adidas<br>Social Playbook</h1>
-      <p class="subtitle" style="margin-bottom:1.5rem">请输入公司邮箱验证身份</p>
-      <div class="verify-input-group" style="display:flex;flex-direction:column;gap:.6rem">
-        <input class="verify-input" id="verifyEmail" type="email" placeholder="name@goodideamedia.com" autocomplete="email" onkeydown="if(event.key==='Enter')doVerify()">
-        <button class="verify-btn" onclick="doVerify()">验证邮箱</button>
-        <div class="verify-err" id="verifyError"></div>
+  <!-- ═══ Verify ═══ -->
+  <div class="v-wrap" id="vWrap">
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
+    <div class="v-box">
+      <div class="eyebrow" style="opacity:.35;border-bottom:none">Internal · Confidential</div>
+      <h1 class="h1" style="font-size:clamp(1.8rem,7vmin,2.5rem);margin-bottom:.5rem">adidas<br>Social Playbook</h1>
+      <p class="p1" style="margin-bottom:1.3rem">请输入公司邮箱验证身份</p>
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <input class="v-inp" id="vEmail" type="email" placeholder="name@goodideamedia.com" autocomplete="email" onkeydown="if(event.key==='Enter')vd()">
+        <button class="v-btn" onclick="vd()">验证邮箱</button>
+        <div class="v-err" id="vErr"></div>
       </div>
-      <div class="verify-hint">仅限 goodideamedia 团队成员</div>
-      <button class="verify-logout" id="verifyLogout" style="display:none" onclick="logoutVerify()">切换账号</button>
+      <div class="v-hint">仅限 goodideamedia 团队成员</div>
+      <button class="v-out" id="vOut" style="display:none" onclick="vl()">切换账号</button>
     </div>
   </div>
 
-  <!-- ═══ Top Bar ═══ -->
-  <div class="top-bar" id="topBar" style="display:none">
-    <div class="bar-group">
-      <button class="bar-btn" onclick="showTOC()">☰ 目录</button>
+  <!-- ═══ Bar ═══ -->
+  <div class="bar" id="topBar" style="display:none">
+    <div class="btn-group">
+      <button class="bar-btn" onclick="st()">☰ 目录</button>
     </div>
-    <div class="bar-group">
-      <span class="auth-badge" id="authBadge">🔒</span>
-      <button class="bar-btn" onclick="showUpload()">⬆ 上传</button>
-      <button class="bar-btn" onclick="downloadFile()">⬇ 下载</button>
-      <div class="edit-toggle bar-btn locked" id="editBtn" onclick="handleEditClick()" style="margin-left:2px">
-        <span id="editBtnIcon">✎</span>
+    <div class="btn-group">
+      <span class="badge-auth" id="authB">🔒</span>
+      <button class="bar-btn" onclick="su()">⬆ 上传</button>
+      <button class="bar-btn" onclick="dl()">⬇ 下载</button>
+      <div class="edit-badge bar-btn" id="editBtn" onclick="he()" style="margin-left:1px">
+        <span id="editI">✎</span>
       </div>
     </div>
   </div>
   <div class="edit-hint" id="editHint">点击文字编辑</div>
-  <div class="user-badge" id="userBadge" style="display:none"></div>
+  <div class="user-tag" id="userTag" style="display:none"></div>
 
-  <!-- ═══ TOC ═══ -->
-  <div class="modal-overlay" id="tocOverlay">
+  <!-- ═══ Modal: TOC ═══ -->
+  <div class="modal-overlay" id="tocO">
     <div class="modal-box" style="max-width:440px">
-      <button class="modal-close" onclick="hideTOC()">✕</button>
-      <div class="modal-title">📋 目录</div>
-      <ul class="toc-list" id="tocList"></ul>
+      <button class="modal-x" onclick="ht()">✕</button>
+      <div class="modal-t">📋 目录</div>
+      <ul class="toc-list" id="tocL"></ul>
     </div>
   </div>
 
-  <!-- ═══ Permission Modal ═══ -->
-  <div class="modal-overlay" id="permOverlay">
+  <!-- ═══ Modal: Permission ═══ -->
+  <div class="modal-overlay" id="permO">
     <div class="modal-box">
-      <button class="modal-close" onclick="hidePerm()">✕</button>
-      <div id="permView"></div>
+      <button class="modal-x" onclick="hp()">✕</button>
+      <div id="permV"></div>
     </div>
   </div>
 
-  <!-- ═══ Upload Modal ═══ -->
-  <div class="modal-overlay" id="uploadOverlay">
+  <!-- ═══ Modal: Upload ═══ -->
+  <div class="modal-overlay" id="upO">
     <div class="modal-box">
-      <button class="modal-close" onclick="hideUpload()">✕</button>
-      <div class="modal-title">⬆ 上传资料</div>
-      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-        <div class="drop-zone-icon">📁</div>
-        <div class="drop-zone-text">点击选择文件或拖拽到此处</div>
+      <button class="modal-x" onclick="hu()">✕</button>
+      <div class="modal-t">⬆ 上传资料</div>
+      <div class="drop" id="dropZ" onclick="document.getElementById('fileI').click()">
+        <div class="drop-i">📁</div>
+        <div class="drop-t">选择文件或拖拽到此处</div>
       </div>
-      <input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(this.files)">
-      <div id="fileList" style="margin-top:.5rem"></div>
-      <div class="divider"></div>
-      <div style="text-align:center;font-size:clamp(.5rem,1.4vmin,.6rem);color:var(--text-dimmer);opacity:.4">文件存储于本地浏览器 · 清除缓存后会丢失</div>
+      <input type="file" id="fileI" multiple style="display:none" onchange="hf(this.files)">
+      <div id="fileL"></div>
+      <div class="f-hr"></div>
+      <div style="text-align:center;font-size:clamp(.5rem,1.2vmin,.55rem);color:var(--text-quaternary)">文件存储在本地浏览器</div>
     </div>
   </div>
 
-  <!-- ═══ SLIDES ═══ -->
-  <div class="slides-container" id="slidesContainer" style="display:none">
+  <!-- ═══ Slides ═══ -->
+  <div class="stage" id="stage" style="display:none">
 
     <!-- 1: Cover -->
     <div class="slide active">
-      <div class="ambient a1"></div>
-      <div class="ambient a2"></div>
-      <div class="ambient a3"></div>
-      <div class="slide-content">
-        <div class="badge">Internal · Confidential</div>
-        <h1 class="title-main editable">adidas<br>Social Playbook</h1>
-        <p class="subtitle editable">社交媒体运营手册</p>
-        <div class="divider"></div>
-        <p class="subtitle" style="font-size:clamp(.55rem,1.6vmin,.7rem);color:var(--text-dimmer);margin-top:auto;flex-shrink:0">仅供 adidas 服务团队使用</p>
-        <p style="font-size:clamp(.5rem,1.4vmin,.65rem);color:var(--text-dimmer);opacity:.5;flex-shrink:0" class="editable">联系：hedan@goodideamedia.com</p>
+      <div class="glow g1"></div>
+      <div class="glow g2"></div>
+      <div class="glow g3"></div>
+      <div class="frame" style="justify-content:center">
+        <div class="eyebrow">Internal · Confidential</div>
+        <h1 class="h1 editable">adidas<br>Social Playbook</h1>
+        <p class="p1 editable" style="margin-top:.3rem">社交媒体运营手册</p>
+        <div class="rule"></div>
+        <p class="p1" style="font-size:clamp(.55rem,1.5vmin,.65rem);color:var(--text-tertiary);margin-top:auto">仅供 adidas 服务团队</p>
+        <p style="font-size:clamp(.5rem,1.3vmin,.6rem);color:var(--text-quaternary)" class="editable">联系 hedan@goodideamedia.com</p>
       </div>
     </div>
 
     <!-- 2: 字体 -->
     <div class="slide">
-      <div class="ambient a2"></div>
-      <div class="slide-content">
-        <div class="badge">品牌基础</div>
-        <h2 class="title-sec editable">字体使用规范</h2>
+      <div class="glow g2"></div>
+      <div class="frame">
+        <div class="eyebrow">品牌基础</div>
+        <h2 class="h2 editable">字体使用规范</h2>
         <div style="text-align:left;width:100%">
-          <div class="card"><div class="card-label">中文字体</div><div class="card-body editable">正文：<strong>思源黑体</strong>（Source Han Sans）<br>Tagline：<strong>思源宋体</strong>（Source Han Serif）</div></div>
-          <div class="card"><div class="card-label">英文字体 · ITC Franklin Gothic</div><div class="card-body editable">用途：常规信息传达<br>变体：Book / Demi Compressed / Book Compressed<br><span class="warn">⚠ 其他变体无版权，禁止使用</span></div></div>
-          <div class="card"><div class="card-label">英文字体 · Denton</div><div class="card-body editable">用途：视觉情感表达<br>变体：<strong>仅限 Light</strong>（其他无版权）</div></div>
-          <div class="card"><div class="card-label">特殊字符</div><div class="card-body editable">ITC Franklin Gothic 不可用字符 → 使用 Source Han Sans</div></div>
+          <div class="card"><div class="card-l">中文字体</div><div class="card-b editable">正文：<strong style="color:var(--text)">思源黑体</strong>（Source Han Sans）<br>Tagline：<strong style="color:var(--text)">思源宋体</strong>（Source Han Serif）</div></div>
+          <div class="card"><div class="card-l">ITC Franklin Gothic</div><div class="card-b editable">用途：常规信息传达<br>变体：Book / Demi Compressed / Book Compressed<br><span class="warn">⚠ 其他变体无版权，禁止使用</span></div></div>
+          <div class="card"><div class="card-l">Denton</div><div class="card-b editable">用途：视觉情感表达<br>变体：<strong style="color:var(--text)">仅限 Light</strong>（其他无版权）</div></div>
+          <div class="card"><div class="card-l">特殊字符</div><div class="card-b editable">ITC Franklin Gothic 不可用字符 → 使用 Source Han Sans</div></div>
         </div>
       </div>
     </div>
 
-    <!-- 3: 日历&月报 -->
+    <!-- 3: 日历 & 月报 -->
     <div class="slide">
-      <div class="ambient a1"></div>
-      <div class="slide-content">
-        <div class="badge">运营节奏</div>
-        <h2 class="title-sec editable">发布日历 &amp; 月报</h2>
+      <div class="glow g1"></div>
+      <div class="frame">
+        <div class="eyebrow">运营节奏</div>
+        <h2 class="h2 editable">发布日历 &amp; 月报</h2>
         <div style="text-align:left;width:100%">
-          <div class="card"><div class="card-label">📅 发布日历</div><div class="card-body editable">SharePoint 共享版 · Rocky 提前收集发布需求</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://adidasgroup.sharepoint.com/sites/GCABRAND/Shared%20Documents/Forms/AllItems.aspx?e=5%3A18f9fcd9d1ed4037837f91b6e6315d1f&sharingv2=true&fromShare=true&at=9&CID=7a3d219e%2D97a2%2D485e%2Da1c2%2D0b3153d75f61&FolderCTID=0x01200061581B93C2E0614EBAB5EAA1417AA371&id=%2Fsites%2FGCABRAND%2FShared%20Documents%2F2026%2F0%2E%20Calendar" target="_blank">Calendar →</a></div></div>
-          <div class="card"><div class="card-label">📊 Social 源数据</div><div class="card-body editable">飞书表格 · 2024 年社交发布源数据</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/sheets/UtB6s8P3shNYd8tCPOTcWdfNn8b" target="_blank">打开表格 →</a></div></div>
-          <div class="card"><div class="card-label">📈 月报</div><div class="card-body editable">adidas Monthly Report（PPT）</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://adidasgroup.sharepoint.com/sites/GCABRAND/Shared%20Documents/Forms/AllItems.aspx?e=5%3Ae775f317d2104c3aafa350337eb19d39&sharingv2=true&fromShare=true&at=9&CID=f0541379%2Df7a2%2D4b75%2Da01f%2D507a81f7dede&FolderCTID=0x01200061581B93C2E0614EBAB5EAA1417AA371&id=%2Fsites%2FGCABRAND%2FShared%20Documents%2F2025%2F4%2E%20Reporting&viewid=05f652d2%2De37c%2D4f29%2Da1f2%2Db9963098ffc4" target="_blank">SharePoint →</a></div></div>
-          <div class="card" style="border-color:rgba(26,138,106,.12)"><div class="card-label" style="color:var(--accent-text)">跨部门协作</div><div class="card-body editable">涉及与其他部门和其他 agency 的合作与沟通</div></div>
+          <div class="card"><div class="card-l">📅 发布日历</div><div class="card-b editable">SharePoint · Rocky 提前收集发布需求</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://adidasgroup.sharepoint.com/sites/GCABRAND/Shared%20Documents/Forms/AllItems.aspx?e=5%3A18f9fcd9d1ed4037837f91b6e6315d1f&sharingv2=true&fromShare=true&at=9&CID=7a3d219e%2D97a2%2D485e%2Da1c2%2D0b3153d75f61&FolderCTID=0x01200061581B93C2E0614EBAB5EAA1417AA371&id=%2Fsites%2FGCABRAND%2FShared%20Documents%2F2026%2F0%2E%20Calendar" target="_blank">Calendar →</a></div></div>
+          <div class="card"><div class="card-l">📊 Social 源数据</div><div class="card-b editable">飞书表格 · 2024 年发布源数据</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/sheets/UtB6s8P3shNYd8tCPOTcWdfNn8b" target="_blank">打开表格 →</a></div></div>
+          <div class="card"><div class="card-l">📈 月报</div><div class="card-b editable">adidas Monthly Report（PPT）</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://adidasgroup.sharepoint.com/sites/GCABRAND/Shared%20Documents/Forms/AllItems.aspx?e=5%3Ae775f317d2104c3aafa350337eb19d39&sharingv2=true&fromShare=true&at=9&CID=f0541379%2Df7a2%2D4b75%2Da01f%2D507a81f7dede&FolderCTID=0x01200061581B93C2E0614EBAB5EAA1417AA371&id=%2Fsites%2FGCABRAND%2FShared%20Documents%2F2025%2F4%2E%20Reporting&viewid=05f652d2%2De37c%2D4f29%2Da1f2%2Db9963098ffc4" target="_blank">SharePoint →</a></div></div>
+          <div class="card" style="border-color:rgba(0,178,115,.08)"><div class="card-l" style="color:var(--green);opacity:.6">跨部门协作</div><div class="card-b editable">涉及与其他部门和其他 agency 的合作与沟通</div></div>
         </div>
       </div>
     </div>
 
     <!-- 4: 商务流程 -->
     <div class="slide">
-      <div class="light-spot a2"></div>
-      <div class="slide-content">
-        <div class="badge">流程规范</div>
-        <h2 class="title-sec editable">商务流程 &amp; Campaign</h2>
+      <div class="glow g2"></div>
+      <div class="frame">
+        <div class="eyebrow">流程规范</div>
+        <h2 class="h2 editable">商务流程 &amp; Campaign</h2>
         <div style="text-align:left;width:100%">
-          <div class="card"><div class="card-label">📋 Business SOP</div><div class="card-body editable">商务流程标准操作指南</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/docx/R93wdmKWpo4grpxNai6cpMZ7nNb" target="_blank">飞书文档 →</a></div></div>
-          <div class="card"><div class="card-label">📝 Partner Brief</div><div class="card-body editable">需 Partner 配合时准备 brief<br>参考：吴艳妮 × 小红书 publishing brief</div></div>
-          <div class="card"><div class="card-label">🤝 共创流程</div><div class="card-body editable">抖音共创教程（发起+接受）· 投流规则见 xlsx</div></div>
-          <div class="card" style="border-color:rgba(245,158,11,.12)"><div class="card-label" style="color:#fcd34d;opacity:.6">运营平台</div><div class="card-body editable">微博：adidas / adidas football<br>微信·抖音·视频号·小红书：adidas</div></div>
+          <div class="card"><div class="card-l">📋 Business SOP</div><div class="card-b editable">商务流程标准操作指南</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/docx/R93wdmKWpo4grpxNai6cpMZ7nNb" target="_blank">飞书文档 →</a></div></div>
+          <div class="card"><div class="card-l">📝 Partner Brief</div><div class="card-b editable">需 Partner 配合时准备 brief<br>参考：吴艳妮 × 小红书 publishing brief</div></div>
+          <div class="card"><div class="card-l">🤝 共创流程</div><div class="card-b editable">抖音共创教程（发起+接受）· 投流规则见 xlsx</div></div>
+          <div class="card" style="border-color:rgba(245,158,11,.08)"><div class="card-l" style="color:#fcd34d;opacity:.5">运营平台</div><div class="card-b editable">微博：adidas / adidas football<br>微信·抖音·视频号·小红书：adidas</div></div>
         </div>
       </div>
     </div>
 
     <!-- 5: Reactive -->
     <div class="slide">
-      <div class="ambient a1"></div>
-      <div class="slide-content">
-        <div class="badge">01 · Reactive</div>
-        <h2 class="title-sec editable">赛事实时跟进</h2>
+      <div class="glow g1"></div>
+      <div class="frame">
+        <div class="eyebrow">01 · Reactive</div>
+        <h2 class="h2 editable">赛事实时跟进</h2>
         <div style="text-align:left;width:100%">
-          <div class="step-num">01</div>
-          <div class="card"><div class="card-label">🎨 海报制作</div><div class="card-body editable">基于 Global 模板，按赛事→项目→预测赛果→运动员确认</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://pan.baidu.com/s/1HFSw9MsHpZmoDSqS_eyDLw?pwd=a5da" target="_blank">海报模板（百度网盘 a5da）→</a></div></div>
-          <div class="step-num" style="margin-top:.3rem">02</div>
-          <div class="card"><div class="card-label">🏷 话题标签</div><div class="card-body editable">#YouGotThis# #ADIZERO# #运动员# #赛事#</div></div>
-          <div class="step-num" style="margin-top:.3rem">03</div>
-          <div class="card"><div class="card-label">📄 文案确认</div><div class="card-body editable">与客户确认海报+文案 · Spoma 同步预判</div></div>
+          <div class="step">01</div>
+          <div class="card"><div class="card-l">🎨 海报制作</div><div class="card-b editable">基于 Global 模板，按赛事→项目→预测赛果→运动员确认</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://pan.baidu.com/s/1HFSw9MsHpZmoDSqS_eyDLw?pwd=a5da" target="_blank">百度网盘 a5da →</a></div></div>
+          <div class="step" style="margin-top:.3rem">02</div>
+          <div class="card"><div class="card-l">🏷 话题标签</div><div class="card-b editable">#YouGotThis# #ADIZERO# #运动员# #赛事#</div></div>
+          <div class="step" style="margin-top:.3rem">03</div>
+          <div class="card"><div class="card-l">📄 文案确认</div><div class="card-b editable">与客户确认海报+文案 · Spoma 同步预判</div></div>
         </div>
       </div>
     </div>
 
     <!-- 6: 推文 -->
     <div class="slide">
-      <div class="ambient a2"></div>
-      <div class="slide-content">
-        <div class="badge">02 · 推文</div>
-        <h2 class="title-sec editable">公众号发布流程</h2>
+      <div class="glow g2"></div>
+      <div class="frame">
+        <div class="eyebrow">02 · 推文</div>
+        <h2 class="h2 editable">公众号发布流程</h2>
         <div style="text-align:left;width:100%">
-          <div class="bullet"><div class="bullet-dot" style="background:var(--accent)"></div><div class="card-body editable">❶ 接收需求 — 推文 Calendar</div></div>
-          <div class="bullet"><div class="bullet-dot" style="background:rgba(59,130,246,.5)"></div><div class="card-body editable">❷ 大纲 Check — Word/PDF 提交</div></div>
-          <div class="bullet"><div class="bullet-dot" style="background:rgba(6,182,212,.5)"></div><div class="card-body editable">❸ 长图 Check — 对接群发送客户</div></div>
-          <div class="bullet"><div class="bullet-dot" style="background:rgba(245,158,11,.5)"></div><div class="card-body editable">❹ 推文预览 — 壹伴插件</div></div>
-          <div class="bullet"><div class="bullet-dot" style="background:rgba(16,185,129,.5)"></div><div class="card-body editable">❺ 发布 — 管理评论区互动</div></div>
-          <div class="card" style="margin-top:.3rem"><div class="card-label">公众号</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://mp.weixin.qq.com/" target="_blank">mp.weixin.qq.com →</a></div></div>
+          <div class="dot-row"><div class="dot dot-g"></div><div class="card-b editable">❶ 接收需求 — 推文 Calendar</div></div>
+          <div class="dot-row"><div class="dot dot-b"></div><div class="card-b editable">❷ 大纲 Check — Word/PDF 提交</div></div>
+          <div class="dot-row"><div class="dot dot-c"></div><div class="card-b editable">❸ 长图 Check — 对接群发送客户</div></div>
+          <div class="dot-row"><div class="dot dot-a"></div><div class="card-b editable">❹ 推文预览 — 壹伴插件</div></div>
+          <div class="dot-row"><div class="dot dot-t"></div><div class="card-b editable">❺ 发布 — 管理评论区互动</div></div>
+          <div class="card" style="margin-top:.3rem"><div class="card-l">公众号</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://mp.weixin.qq.com/" target="_blank">mp.weixin.qq.com →</a></div></div>
         </div>
       </div>
     </div>
 
     <!-- 7: 多平台 -->
     <div class="slide">
-      <div class="ambient a3"></div>
-      <div class="slide-content">
-        <div class="badge">03 · 多平台</div>
-        <h2 class="title-sec editable">平台发布指南</h2>
+      <div class="glow g3"></div>
+      <div class="frame">
+        <div class="eyebrow">03 · 多平台</div>
+        <h2 class="h2 editable">平台发布指南</h2>
         <div style="text-align:left;width:100%">
-          <div class="card"><div class="card-label">🎵 抖音</div><div class="card-body editable">发布仅自己可见 → 录屏预览</div></div>
-          <div class="card"><div class="card-label">📹 视频号</div><div class="card-body editable">后台直接预览 · 截图二维码给客户<br>注意封面图规范</div></div>
-          <div class="card"><div class="card-label">📕 小红书</div><div class="card-body editable">手机编辑选预览 → 录屏给客户</div></div>
-          <div class="card"><div class="card-label">💬 公众号评论</div><div class="card-body editable">订阅号助手 APP 筛选正向互动</div></div>
+          <div class="card"><div class="card-l">🎵 抖音</div><div class="card-b editable">发布仅自己可见 → 录屏预览</div></div>
+          <div class="card"><div class="card-l">📹 视频号</div><div class="card-b editable">后台直接预览 · 截图二维码给客户<br>注意封面图规范</div></div>
+          <div class="card"><div class="card-l">📕 小红书</div><div class="card-b editable">手机编辑选预览 → 录屏给客户</div></div>
+          <div class="card"><div class="card-l">💬 公众号评论</div><div class="card-b editable">订阅号助手 APP 筛选正向互动</div></div>
         </div>
       </div>
     </div>
 
     <!-- 8: Hijack -->
     <div class="slide">
-      <div class="ambient a1"></div>
-      <div class="slide-content">
-        <div class="badge">04 · 互动 &amp; 风格</div>
-        <h2 class="title-sec editable">Hijack &amp; 内容风格</h2>
+      <div class="glow g1"></div>
+      <div class="frame">
+        <div class="eyebrow">04 · 互动 &amp; 风格</div>
+        <h2 class="h2 editable">Hijack &amp; 内容风格</h2>
         <div style="text-align:left;width:100%">
-          <div class="card"><div class="card-label">🎯 Hijack</div><div class="card-body editable">晒 adidas → 蹭互动 · 运动员 → 体现 #YouGotThis 避免水词</div></div>
-          <div class="card" style="border-color:rgba(245,158,11,.12)"><div class="card-label" style="color:#fcd34d;opacity:.6">💡 RN Team 风格</div><div class="card-body editable">简单有力 · 有事说事 · 深度了解跑者 · 可玩 social 梗</div></div>
-          <div class="card" style="border-color:rgba(248,113,113,.12)"><div class="card-label" class="warn" style="color:#f87171;opacity:.6">🚫 避免事项</div><div class="card-body editable">Football 不玩抽象 · 记录≠纪录 · 42.195KM≠42KM<br>产品名 xx 2.0≠xx 2 · adizero 写全称</div></div>
+          <div class="card"><div class="card-l">🎯 Hijack</div><div class="card-b editable">晒 adidas → 蹭互动 · 运动员 → 体现 #YouGotThis 避免水词</div></div>
+          <div class="card" style="border-color:rgba(245,158,11,.08)"><div class="card-l" style="color:#fcd34d;opacity:.5">💡 RN Team 风格</div><div class="card-b editable">简单有力 · 有事说事 · 深度了解跑者 · 可玩 social 梗</div></div>
+          <div class="card" style="border-color:rgba(248,113,113,.08)"><div class="card-l" style="color:var(--error);opacity:.5">🚫 避免事项</div><div class="card-b editable">Football 不玩抽象 · 记录≠纪录 · 42.195KM≠42KM<br>产品名 xx 2.0≠xx 2 · adizero 写全称</div></div>
         </div>
       </div>
     </div>
 
     <!-- 9: 后台 -->
     <div class="slide">
-      <div class="ambient a2"></div>
-      <div class="slide-content">
-        <div class="badge">工具</div>
-        <h2 class="title-sec editable">运营后台入口</h2>
+      <div class="glow g2"></div>
+      <div class="frame">
+        <div class="eyebrow">工具</div>
+        <h2 class="h2 editable">运营后台入口</h2>
         <div style="text-align:left;width:100%">
-          <div class="card"><div class="card-label">🎵 抖音</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://creator.douyin.com/" target="_blank">creator.douyin.com →</a></div></div>
-          <div class="card"><div class="card-label">📹 视频号</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://channels.weixin.qq.com/" target="_blank">channels.weixin.qq.com →</a></div></div>
-          <div class="card"><div class="card-label">💬 公众号</div><div class="card-body editable">需预装壹伴插件</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://mp.weixin.qq.com/" target="_blank">mp.weixin.qq.com →</a></div></div>
-          <div class="card"><div class="card-label">📕 小红书 Pro</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://pro.xiaohongshu.com/" target="_blank">pro.xiaohongshu.com →</a></div></div>
+          <div class="card"><div class="card-l">🎵 抖音</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://creator.douyin.com/" target="_blank">creator.douyin.com →</a></div></div>
+          <div class="card"><div class="card-l">📹 视频号</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://channels.weixin.qq.com/" target="_blank">channels.weixin.qq.com →</a></div></div>
+          <div class="card"><div class="card-l">💬 公众号</div><div class="card-b editable">需预装壹伴插件</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://mp.weixin.qq.com/" target="_blank">mp.weixin.qq.com →</a></div></div>
+          <div class="card"><div class="card-l">📕 小红书 Pro</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://pro.xiaohongshu.com/" target="_blank">pro.xiaohongshu.com →</a></div></div>
         </div>
       </div>
     </div>
 
     <!-- 10: OA -->
     <div class="slide">
-      <div class="ambient a1"></div>
-      <div class="slide-content">
-        <div class="badge">工具</div>
-        <h2 class="title-sec editable">OA &amp; 推文加参</h2>
+      <div class="glow g1"></div>
+      <div class="frame">
+        <div class="eyebrow">工具</div>
+        <h2 class="h2 editable">OA &amp; 推文加参</h2>
         <div style="text-align:left;width:100%">
-          <div class="card"><div class="card-label">📋 OA 菜单</div><div class="card-body editable">账号：sunyifan@goodideamedia.com</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="http://www.woaap.com" target="_blank">www.woaap.com →</a></div></div>
-          <div class="card"><div class="card-label">📈 推文加参</div><div class="card-body editable">账号：Yifan.Sun</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://ubm.adidas.com.cn" target="_blank">ubm.adidas.com.cn →</a></div></div>
-          <div class="card"><div class="card-label">📁 素材库</div><div class="card-body editable">飞书文件夹 · 所有发布素材和 Deck</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/drive/folder/DBJEflWdPlyNf9dZWqYc8uSQnwW" target="_blank">飞书文件夹 →</a></div></div>
+          <div class="card"><div class="card-l">📋 OA 菜单</div><div class="card-b editable">账号：sunyifan@goodideamedia.com</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="http://www.woaap.com" target="_blank">www.woaap.com →</a></div></div>
+          <div class="card"><div class="card-l">📈 推文加参</div><div class="card-b editable">账号：Yifan.Sun</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://ubm.adidas.com.cn" target="_blank">ubm.adidas.com.cn →</a></div></div>
+          <div class="card"><div class="card-l">📁 素材库</div><div class="card-b editable">飞书文件夹 · 所有发布素材和 Deck</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/drive/folder/DBJEflWdPlyNf9dZWqYc8uSQnwW" target="_blank">飞书文件夹 →</a></div></div>
         </div>
       </div>
     </div>
 
     <!-- 11: 学习 -->
     <div class="slide">
-      <div class="ambient a3"></div>
-      <div class="slide-content">
-        <div class="badge">资源</div>
-        <h2 class="title-sec editable">学习 &amp; 参考资料</h2>
+      <div class="glow g3"></div>
+      <div class="frame">
+        <div class="eyebrow">资源</div>
+        <h2 class="h2 editable">学习 &amp; 参考资料</h2>
         <div style="text-align:left;width:100%">
-          <div class="card"><div class="card-label">📘 10G+ 学习资料</div><div class="card-body editable">飞书文档 · 持续更新</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/docx/JJXNdcbVRoATQdxuEsUcRZwMn6d" target="_blank">飞书文档 →</a></div></div>
-          <div class="card"><div class="card-label">📙 RN Social Wiki</div><div class="card-body editable">飞书 Wiki · 跑步社交知识库</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/wiki/CT2QwELPyi6Qw4krGurc9dZcnNe" target="_blank">飞书 Wiki →</a></div></div>
-          <div class="card"><div class="card-label">📁 Reactive 海报源文件</div><div class="card-body editable">百度网盘 · 海报模板</div><div class="link-row"><span class="link-icon">🔗</span><a class="link" href="https://pan.baidu.com/s/1HFSw9MsHpZmoDSqS_eyDLw?pwd=a5da" target="_blank">百度网盘 a5da →</a></div></div>
-          <div class="card"><div class="card-label">📎 附件</div><div class="card-body editable">投流规则.xlsx · 月报.pptx · Brief 模板 · PDF · 字体包</div></div>
+          <div class="card"><div class="card-l">📘 10G+ 学习资料</div><div class="card-b editable">飞书文档 · 持续更新</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/docx/JJXNdcbVRoATQdxuEsUcRZwMn6d" target="_blank">飞书文档 →</a></div></div>
+          <div class="card"><div class="card-l">📙 RN Social Wiki</div><div class="card-b editable">飞书 Wiki · 跑步社交知识库</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://k74u68pb5x.feishu.cn/wiki/CT2QwELPyi6Qw4krGurc9dZcnNe" target="_blank">飞书 Wiki →</a></div></div>
+          <div class="card"><div class="card-l">📁 海报源文件</div><div class="card-b editable">百度网盘 · Reactive 海报模板</div><div class="link-row"><span style="opacity:.3">🔗</span><a class="link" href="https://pan.baidu.com/s/1HFSw9MsHpZmoDSqS_eyDLw?pwd=a5da" target="_blank">百度网盘 a5da →</a></div></div>
+          <div class="card"><div class="card-l">📎 附件</div><div class="card-b editable">投流规则.xlsx · 月报.pptx · Brief 模板 · PDF · 字体包</div></div>
         </div>
       </div>
     </div>
 
     <!-- 12: Ending -->
     <div class="slide">
-      <div class="ambient a1"></div>
-      <div class="ambient a2"></div>
-      <div class="ambient a3"></div>
-      <div class="slide-content">
-        <div class="badge">#YouGotThis</div>
-        <h1 class="title-main editable" style="font-size:clamp(1.6rem,5vmin,2.5rem)">这就是<br>adidas Social</h1>
-        <div class="divider"></div>
-        <p class="subtitle editable" style="font-size:clamp(.8rem,2.5vmin,1rem)">简单有力 · 有事说事</p>
-        <p class="subtitle" style="font-size:clamp(.55rem,1.6vmin,.7rem);color:var(--text-dimmer);margin-top:1rem">联系：hedan@goodideamedia.com</p>
+      <div class="glow g1"></div>
+      <div class="glow g2"></div>
+      <div class="glow g3"></div>
+      <div class="frame" style="justify-content:center">
+        <div class="eyebrow">#YouGotThis</div>
+        <h1 class="h1 editable" style="font-size:clamp(1.6rem,5vmin,2.5rem)">这就是<br>adidas Social</h1>
+        <div class="rule"></div>
+        <p class="p1 editable" style="font-size:clamp(.8rem,2.5vmin,1rem);margin-bottom:.5rem">简单有力 · 有事说事</p>
+        <p style="font-size:clamp(.55rem,1.6vmin,.7rem);color:var(--text-tertiary)">联系 hedan@goodideamedia.com</p>
       </div>
     </div>
 
   </div>
 
-  <div class="progress-bar" id="progressBar" style="display:none"></div>
-  <div class="page-num" id="pageNum" style="display:none">1 / 12</div>
+  <div class="progress" id="progress" style="display:none"></div>
+  <div class="p-num" id="pNum" style="display:none">1/12</div>
   <div class="toast" id="toast"></div>
 
 <script>
-const TOC = [[2,'品牌基础','字体使用规范'],[3,'运营节奏','发布日历 & 月报'],[4,'流程规范','商务流程 & Campaign'],[5,'01 · Reactive','赛事实时跟进'],[6,'02 · 推文','公众号发布流程'],[7,'03 · 多平台','平台发布指南'],[8,'04 · 互动 & 风格','Hijack & 内容风格'],[9,'工具','运营后台入口'],[10,'工具','OA & 推文加参'],[11,'资源','学习 & 参考资料']];
-const S = document.querySelectorAll('.slide');
-const PB = document.getElementById('progressBar');
-const PN = document.getElementById('pageNum');
-const EH = document.getElementById('editHint');
-const EB = document.getElementById('editBtn');
-const EI = document.getElementById('editBtnIcon');
-const AB = document.getElementById('authBadge');
-const T = document.getElementById('toast');
-const TL = document.getElementById('tocList');
-const UB = document.getElementById('userBadge');
-let cur=0, em=0, tm=null, ea=false;
-
-TOC.forEach(([i,tg,tt])=>{
+const TI=[[2,'品牌基础','字体使用规范'],[3,'运营节奏','发布日历 & 月报'],[4,'流程规范','商务流程 & Campaign'],[5,'01 · Reactive','赛事实时跟进'],[6,'02 · 推文','公众号发布流程'],[7,'03 · 多平台','平台发布指南'],[8,'04 · 互动 & 风格','Hijack & 内容风格'],[9,'工具','运营后台入口'],[10,'工具','OA & 推文加参'],[11,'资源','学习 & 参考资料']];
+const SL=document.querySelectorAll('.slide');
+const PB=document.getElementById('progress');
+const PN=document.getElementById('pNum');
+const EH=document.getElementById('editHint');
+const EB=document.getElementById('editBtn');
+const EI=document.getElementById('editI');
+const AB=document.getElementById('authB');
+const TT=document.getElementById('toast');
+const TL=document.getElementById('tocL');
+const UG=document.getElementById('userTag');
+let cu=0,em=0,ttm=null,ea=false;
+TI.forEach(([i,tg,tt],idx)=>{
   const l=document.createElement('li');l.className='toc-item';l.dataset.index=i;
-  l.innerHTML=`<div class="toc-num">${i}</div><div class="toc-info"><div class="toc-tag">${tg}</div><div class="toc-title">${tt}</div></div>`;
+  l.innerHTML=`<div class="toc-n">${i}</div><div class="toc-info" style="flex:1;min-width:0"><div class="toc-tg">${tg}</div><div class="toc-t">${tt}</div></div>`;
   l.addEventListener('click',()=>{go(i-1);ht()});TL.appendChild(l)});
-S.forEach((_,i)=>{const d=document.createElement('div');d.className='progress-dot';d.addEventListener('click',()=>go(i));PB.appendChild(d)});
-
+SL.forEach((_,i)=>{const d=document.createElement('div');d.className='p-dot';d.addEventListener('click',()=>go(i));PB.appendChild(d)});
 function up(){
-  S.forEach((s,i)=>{s.classList.remove('active','prev');if(i===cur)s.classList.add('active');else if(i<cur)s.classList.add('prev')});
-  document.querySelectorAll('.progress-dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
-  PN.textContent=`${cur+1}/${S.length}`;
-  document.querySelectorAll('.toc-item').forEach(i=>i.classList.toggle('active',parseInt(i.dataset.index)-1===cur));
-}
-function nx(){if(cur<S.length-1){cur++;up()}}
-function pr(){if(cur>0){cur--;up()}}
-function go(i){cur=i;up()}
+  SL.forEach((s,i)=>{s.classList.remove('active','prev');if(i===cu)s.classList.add('active');else if(i<cu)s.classList.add('prev')});
+  document.querySelectorAll('.p-dot').forEach((d,i)=>d.classList.toggle('active',i===cu));
+  PN.textContent=`${cu+1}/${SL.length}`;
+  document.querySelectorAll('.toc-item').forEach(i=>i.classList.toggle('active',parseInt(i.dataset.index)-1===cu));}
+function nx(){if(cu<SL.length-1){cu++;up()}}
+function pr(){if(cu>0){cu--;up()}}
+function go(i){cu=i;up()}
 
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nx()}else if(e.key==='ArrowLeft'){e.preventDefault();pr()}else if(e.key==='Escape'){ht();hp();hu()}});
 
 let sk=false,sx=0,sy=0;
 document.addEventListener('touchstart',e=>{if(sk)return;sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
-document.addEventListener('touchmove',e=>{if(sk)return;const dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;if(Math.abs(dx)>Math.abs(dy)*1.5)e.preventDefault()},{passive:false});
-document.addEventListener('touchend',e=>{if(sk)return;const dx=sx-e.changedTouches[0].clientX;if(Math.abs(dx)>35&&Math.abs(dx)>Math.abs(e.changedTouches[0].clientY-sy)*1.2){sk=true;dx>0?nx():pr();setTimeout(()=>{sk=false},550)}},{passive:true});
+document.addEventListener('touchmove',e=>{if(sk)return;const dx=e.touches[0].clientX-sx;if(Math.abs(dx)>30)e.preventDefault()},{passive:false});
+document.addEventListener('touchend',e=>{if(sk)return;const dx=sx-e.changedTouches[0].clientX,dy=sy-e.changedTouches[0].clientY;if(Math.abs(dx)>35&&Math.abs(dx)>Math.abs(dy)*1.2){sk=true;dx>0?nx():pr();setTimeout(()=>{sk=false},500)}},{passive:true});
 
-// ─── Verify ───
-function doVerify(){
-  const e=document.getElementById('verifyEmail').value.trim().toLowerCase(),er=document.getElementById('verifyError');
+function vd(){
+  const e=document.getElementById('vEmail').value.trim().toLowerCase(),er=document.getElementById('vErr');
   if(!e||!e.includes('@')){er.textContent='请输入有效邮箱';return}
   const d=e.split('@')[1];
   if(d!=='goodideamedia.com'&&d!=='goodideamedia.com.cn'){er.textContent='❌ 仅限 @goodideamedia.com';return}
-  if(e.split('@')[0].length<1){er.textContent='无效邮箱';return}
   er.textContent='';
-  localStorage.setItem('adidas_verified','true');
-  localStorage.setItem('adidas_verified_email',e);
-  showC(e);
-}
-function showC(e){
-  document.getElementById('verifyOverlay').classList.add('hidden');
-  ['topBar','slidesContainer','progressBar','pageNum'].forEach(i=>document.getElementById(i).style.display='flex');
-  UB.style.display='block';UB.textContent=e;
-  ck();
-}
-function ckV(){
-  const v=localStorage.getItem('adidas_verified'),e=localStorage.getItem('adidas_verified_email');
-  if(v==='true'&&e&&(e.endsWith('@goodideamedia.com')||e.endsWith('@goodideamedia.com.cn'))){showC(e);return}
-}
-function lg(){
+  localStorage.setItem('adidas_verified','true');localStorage.setItem('adidas_verified_email',e);sc(e);}
+function sc(e){
+  document.getElementById('vWrap').classList.add('hide');
+  ['topBar','stage','progress','pNum'].forEach(i=>document.getElementById(i).style.display='flex');
+  UG.style.display='block';UG.textContent=e;ck();}
+function ckV(){const v=localStorage.getItem('adidas_verified'),e=localStorage.getItem('adidas_verified_email');if(v==='true'&&e&&(e.endsWith('@goodideamedia.com')||e.endsWith('@goodideamedia.com.cn'))){sc(e);return}}
+function vl(){
   ['adidas_verified','adidas_verified_email','adidas_admin_approved'].forEach(k=>localStorage.removeItem(k));
-  document.getElementById('verifyOverlay').classList.remove('hidden');
-  ['topBar','slidesContainer','progressBar','pageNum'].forEach(i=>document.getElementById(i).style.display='none');
-  UB.style.display='none';
-  EB.className='edit-toggle bar-btn locked';EI.textContent='✎';
-  document.getElementById('verifyEmail').value='';document.getElementById('verifyError').textContent='';
-  document.getElementById('verifyLogout').style.display='none';
-}
+  document.getElementById('vWrap').classList.remove('hide');
+  ['topBar','stage','progress','pNum'].forEach(i=>document.getElementById(i).style.display='none');
+  UG.style.display='none';EB.className='edit-badge bar-btn';EI.textContent='✎';
+  document.getElementById('vEmail').value='';document.getElementById('vErr').textContent='';
+  document.getElementById('vOut').style.display='none';}
 
-// ─── Permission ───
 const AK='adidas_admin_approved',PW='adidas_admin_pwd';
 if(!localStorage.getItem(PW))localStorage.setItem(PW,'adidas2026');
 function ck(){ea=localStorage.getItem(AK)==='true';u2()}
-function u2(){
-  if(ea){EB.className='edit-toggle bar-btn editable';EI.textContent='✎';AB.textContent='✓ 管理员';AB.className='auth-badge ok'}
-  else{EB.className='edit-toggle bar-btn locked';EI.textContent='✎';AB.textContent='🔒';AB.className='auth-badge';if(em)tg(false)}}
-function hEC(){ea?tg(!em):sp('apply')}
-function tg(on){em=on;EB.classList.toggle('active',on);EH.classList.toggle('show',on);document.querySelectorAll('.editable').forEach(el=>el.contentEditable=on);st(on?'✎ 编辑模式':'🔒 已关闭')}
+function u2(){if(ea){EB.className='edit-badge bar-btn on';EI.textContent='✎';AB.textContent='✓ 管理员';AB.className='badge-auth ok'}else{EB.className='edit-badge bar-btn';EI.textContent='✎';AB.textContent='🔒';AB.className='badge-auth';if(em)tg(false)}}
+function he(){ea?tg(!em):sp('apply')}
+function tg(on){em=on;EB.classList.toggle('on',on);EH.classList.toggle('show',on);document.querySelectorAll('.editable').forEach(el=>el.contentEditable=on);st(on?'✎ 编辑模式':'🔒 已关闭')}
 
-function sp(v){document.getElementById('permOverlay').classList.add('show');const c=document.getElementById('permView');v==='apply'?rA(c):rAd(c)}
-function hp(){document.getElementById('permOverlay').classList.remove('show')}
+function sp(v){document.getElementById('permO').classList.add('show');const c=document.getElementById('permV');v==='apply'?rA(c):rAd(c)}
+function hp(){document.getElementById('permO').classList.remove('show')}
 function rA(c){
   const r=(()=>{try{return JSON.parse(localStorage.getItem('adidas_edit_request'))}catch(e){return null}})();
   let s='',d=false;
-  if(r){if(r.status==='pending'){s='<div style="font-size:.7rem;color:#fcd34d;text-align:center;padding:.5rem 0">⏳ 等待审批</div>';d=true}else if(r.status==='approved'){s='<div style="font-size:.7rem;color:var(--accent);text-align:center;padding:.5rem 0">✅ 已通过</div>';d=true}else if(r.status==='denied'){s='<div style="font-size:.7rem;color:#f87171;text-align:center;padding:.5rem 0">❌ 被拒绝</div>'}}
-  c.innerHTML=`<div class="modal-title">🔒 申请编辑权限</div>
-    <div class="form-group"><label class="form-label">姓名</label><input class="form-input" id="fName" placeholder="姓名" maxlength="20"></div>
-    <div class="form-group"><label class="form-label">邮箱</label><input class="form-input" value="${localStorage.getItem('adidas_verified_email')||''}" readonly></div>
-    <div class="form-group"><label class="form-label">理由</label><input class="form-input" id="fReason" placeholder="需要更新品牌资料等" maxlength="100"></div>
-    <button class="form-btn" id="fS" onclick="da()" ${d?'disabled':''}>${d?'已提交':'提交申请'}</button>${s}
-    <div class="divider"></div>
-    <span class="admin-link" onclick="sp('admin')">🔐 管理员验证</span>`;
-}
-function rAd(c){
-  c.innerHTML=`<div class="modal-title">🔐 管理员验证</div>
-    <div class="form-group"><label class="form-label">密码</label><input class="form-input" id="aPwd" type="password" placeholder="管理员密码"></div>
-    <button class="form-btn" onclick="al()" style="margin-bottom:.7rem">验证</button><div id="aR"></div>
-    <div class="divider"></div><span class="admin-link" onclick="sp('apply')">← 返回</span>`;
-}
-window.da=function(){
-  const n=document.getElementById('fName').value.trim(),r=document.getElementById('fReason').value.trim();
-  if(!n||!r){st('⚠️ 请填完整');return}
-  localStorage.setItem('adidas_edit_request',JSON.stringify({name:n,email:localStorage.getItem('adidas_verified_email'),reason:r,time:new Date().toISOString(),status:'pending'}));
-  st('✅ 已提交');document.getElementById('fS').disabled=true;document.getElementById('fS').textContent='已提交';
-};
-window.al=function(){
-  const p=document.getElementById('aPwd').value.trim();
-  if(p===localStorage.getItem(PW)){localStorage.setItem(AK,'true');ea=true;u2();hp();st('✅ 已验证');const c=document.getElementById('aR');if(c)rAR(c)}
-  else st('❌ 密码错误');
-};
-function rAR(c){
+  if(r){if(r.status==='pending'){s='<div style="font-size:.65rem;color:#fcd34d;text-align:center;padding:.5rem 0">⏳ 等待审批</div>';d=true}else if(r.status==='approved'){s='<div style="font-size:.65rem;color:var(--green);text-align:center;padding:.5rem 0">✅ 已通过</div>';d=true}else if(r.status==='denied'){s='<div style="font-size:.65rem;color:var(--error);text-align:center;padding:.5rem 0">❌ 被拒绝</div>'}}
+  c.innerHTML=`<div class="modal-t">🔒 申请编辑权限</div>
+    <div class="f-group"><label class="f-l">姓名</label><input class="f-i" id="fN" placeholder="姓名" maxlength="20"></div>
+    <div class="f-group"><label class="f-l">邮箱</label><input class="f-i" value="${localStorage.getItem('adidas_verified_email')||''}" readonly></div>
+    <div class="f-group"><label class="f-l">理由</label><input class="f-i" id="fR" placeholder="需要更新品牌资料等" maxlength="100"></div>
+    <button class="f-btn" id="fS" onclick="da()" ${d?'disabled':''}>${d?'已提交':'提交申请'}</button>${s}
+    <div class="f-hr"></div><span class="f-link" onclick="sp('admin')">🔐 管理员验证</span>`;}
+function rAd(c){c.innerHTML=`<div class="modal-t">🔐 管理员验证</div><div class="f-group"><label class="f-l">密码</label><input class="f-i" id="aP" type="password" placeholder="管理员密码"></div><button class="f-btn" onclick="al()" style="margin-bottom:.7rem">验证</button><div id="aR"></div><div class="f-hr"></div><span class="f-link" onclick="sp('apply')">← 返回</span>`}
+window.da=function(){const n=document.getElementById('fN').value.trim(),r=document.getElementById('fR').value.trim();if(!n||!r){st('⚠️ 请填完整');return}localStorage.setItem('adidas_edit_request',JSON.stringify({name:n,email:localStorage.getItem('adidas_verified_email'),reason:r,time:new Date().toISOString(),status:'pending'}));st('✅ 已提交');document.getElementById('fS').disabled=true;document.getElementById('fS').textContent='已提交'};
+window.al=function(){const p=document.getElementById('aP').value.trim();if(p===localStorage.getItem(PW)){localStorage.setItem(AK,'true');ea=true;u2();hp();st('✅ 已验证');const c=document.getElementById('aR');if(c)rAr(c)}else st('❌ 密码错误')};
+function rAr(c){
   const r=(()=>{try{return JSON.parse(localStorage.getItem('adidas_edit_request'))}catch(e){return null}})();
-  if(!r){c.innerHTML='<div style="font-size:.7rem;color:rgba(255,255,255,.2);text-align:center">无待审批</div>';return}
-  if(r.status==='approved'){c.innerHTML='<div style="font-size:.7rem;color:var(--accent);text-align:center">✅ 已批准</div>';return}
-  if(r.status==='denied'){c.innerHTML='<div style="font-size:.7rem;color:#f87171;text-align:center">❌ 已拒绝</div>';return}
-  c.innerHTML=`<div class="req-item"><div class="req-info"><div class="req-name">${r.name}</div><div style="font-size:.6rem;color:rgba(255,255,255,.2)">${r.email}</div><div class="req-reason">${r.reason}</div></div><div class="req-actions"><button class="btn-sm" style="background:var(--accent-light);color:var(--accent)" onclick="ap()">批准</button><button class="btn-sm" style="background:rgba(248,113,113,.1);color:#f87171" onclick="de()">拒绝</button></div></div>`;
-}
-window.ap=function(){const r=JSON.parse(localStorage.getItem('adidas_edit_request'));r.status='approved';localStorage.setItem('adidas_edit_request',JSON.stringify(r));localStorage.setItem(AK,'true');ea=true;u2();rAR(document.getElementById('aR'));hp();st('✅ 已批准')};
-window.de=function(){const r=JSON.parse(localStorage.getItem('adidas_edit_request'));r.status='denied';localStorage.setItem('adidas_edit_request',JSON.stringify(r));rAR(document.getElementById('aR'));st('❌ 已拒绝')};
+  if(!r){c.innerHTML='<div style="font-size:.65rem;color:rgba(255,255,255,.15);text-align:center">无待审批</div>';return}
+  if(r.status==='approved'){c.innerHTML='<div style="font-size:.65rem;color:var(--green);text-align:center">✅ 已批准</div>';return}
+  if(r.status==='denied'){c.innerHTML='<div style="font-size:.65rem;color:var(--error);text-align:center">❌ 已拒绝</div>';return}
+  c.innerHTML=`<div class="req-item"><div class="req-info"><div class="req-n">${r.name}</div><div style="font-size:.55rem;color:rgba(255,255,255,.15)">${r.email}</div><div class="req-r">${r.reason}</div></div><div class="req-act"><button class="btn-sm btn-ok" onclick="ap()">批准</button><button class="btn-sm btn-no" onclick="de()">拒绝</button></div></div>`;}
+window.ap=function(){const r=JSON.parse(localStorage.getItem('adidas_edit_request'));r.status='approved';localStorage.setItem('adidas_edit_request',JSON.stringify(r));localStorage.setItem(AK,'true');ea=true;u2();rAr(document.getElementById('aR'));hp();st('✅ 已批准')};
+window.de=function(){const r=JSON.parse(localStorage.getItem('adidas_edit_request'));r.status='denied';localStorage.setItem('adidas_edit_request',JSON.stringify(r));rAr(document.getElementById('aR'));st('❌ 已拒绝')};
 
-// ─── Upload (IndexedDB) ───
-const DB_NAME='adidas_assets',STORE='files';
-function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=e=>e.target.result.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e.target.error)})}
-async function saveFile(file){
-  const db=await openDB(),tx=db.transaction(STORE,'readwrite');
-  return new Promise((res,rej)=>{
-    const reader=new FileReader();
-    reader.onload=()=>{
-      tx.objectStore(STORE).add({name:file.name,type:file.type,size:file.size,data:reader.result,date:new Date().toISOString()});
-      tx.oncomplete=()=>res();tx.onerror=e=>rej(e.target.error);
-    };reader.onerror=e=>rej(e.target.error);
-    reader.readAsArrayBuffer(file);
-  });
-}
-async function loadFiles(){
-  const db=await openDB(),tx=db.transaction(STORE,'readonly');
-  return new Promise((res,rej)=>{
-    const items=[];tx.objectStore(STORE).openCursor().onsuccess=e=>{const c=e.target.result;if(c){items.push(c.value);c.continue()}else res(items)};
-    tx.onerror=e=>rej(e.target.error);
-  });
-}
-async function deleteFile(id){
-  const db=await openDB(),tx=db.transaction(STORE,'readwrite');
-  return new Promise((res,rej)=>{tx.objectStore(STORE).delete(id);tx.oncomplete=()=>res();tx.onerror=e=>rej(e.target.error)});
-}
-function fmtSize(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB'}
-function fileIcon(t){return t?.startsWith('image/')?'🖼':t?.startsWith('video/')?'🎬':t?.includes('pdf')?'📄':t?.includes('sheet')||t?.includes('excel')?'📊':t?.includes('presentation')||t?.includes('powerpoint')?'📽':'📎'}
+const DB_N='adidas_assets',ST='files';
+function opDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_N,1);r.onupgradeneeded=e=>e.target.result.createObjectStore(ST,{keyPath:'id',autoIncrement:true});r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e.target.error)})}
+async function svF(f){const db=await opDB(),tx=db.transaction(ST,'readwrite');return new Promise((res,rej)=>{const rd=new FileReader();rd.onload=()=>{tx.objectStore(ST).add({name:f.name,type:f.type,size:f.size,data:rd.result,date:new Date().toISOString()});tx.oncomplete=()=>res();tx.onerror=e=>rej(e.target.error)};rd.onerror=e=>rej(e.target.error);rd.readAsArrayBuffer(f)})}
+async function ldF(){const db=await opDB(),tx=db.transaction(ST,'readonly');return new Promise((res,rej)=>{const it=[];tx.objectStore(ST).openCursor().onsuccess=e=>{const c=e.target.result;if(c){it.push(c.value);c.continue()}else res(it)};tx.onerror=e=>rej(e.target.error)})}
+async function delF(id){const db=await opDB(),tx=db.transaction(ST,'readwrite');return new Promise((res,rej)=>{tx.objectStore(ST).delete(id);tx.oncomplete=()=>res();tx.onerror=e=>rej(e.target.error)})}
+function fs(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB'}
+function fi(t){return t?.startsWith('image/')?'🖼':t?.startsWith('video/')?'🎬':t?.includes('pdf')?'📄':t?.includes('sheet')||t?.includes('excel')?'📊':t?.includes('presentation')||t?.includes('powerpoint')?'📽':'📎'}
+async function rf(){const el=document.getElementById('fileL');let it;try{it=await ldF()}catch(e){el.innerHTML='<div class="empty-state">加载失败</div>';return}if(!it.length){el.innerHTML='<div class="empty-state">暂无上传资料</div>';return}el.innerHTML=it.map(f=>`<div class="file-item"><span class="file-ico">${fi(f.type)}</span><span class="file-n">${f.name}</span><span class="file-sz">${fs(f.size)}</span><button class="file-del" onclick="df(${f.id})">✕</button></div>`).join('')}
+window.hf=async function(files){for(const f of files){try{await svF(f)}catch(e){st('⚠️ 上传失败: '+f.name)}}rf();st('✅ 上传完成')}
+window.df=async function(id){try{await delF(id);rf();st('🗑 已删除')}catch(e){st('⚠️ 删除失败')}}
+function su(){document.getElementById('upO').classList.add('show');rf()}
+function hu(){document.getElementById('upO').classList.remove('show')}
+const dz=document.getElementById('dropZ');dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');hf(e.dataTransfer.files)});
 
-async function renderFiles(){
-  const el=document.getElementById('fileList');let items;
-  try{items=await loadFiles()}catch(e){el.innerHTML='<div class="file-empty">加载失败</div>';return}
-  if(!items.length){el.innerHTML='<div class="file-empty">暂无上传资料</div>';return}
-  el.innerHTML=items.map(f=>`<div class="file-item"><span class="file-icon">${fileIcon(f.type)}</span><span class="file-name">${f.name}</span><span class="file-size">${fmtSize(f.size)}</span><button class="file-del" onclick="delFile(${f.id})">✕</button></div>`).join('');
-}
-window.handleFiles=async function(files){
-  for(const f of files){try{await saveFile(f)}catch(e){st('⚠️ 上传失败: '+f.name)}}
-  renderFiles();st('✅ 上传完成');
-}
-window.delFile=async function(id){
-  try{await deleteFile(id);renderFiles();st('🗑 已删除')}catch(e){st('⚠️ 删除失败')}
-}
-function showUpload(){document.getElementById('uploadOverlay').classList.add('show');renderFiles()}
-function hideUpload(){document.getElementById('uploadOverlay').classList.remove('show')}
-
-// Drag & drop
-const dz=document.getElementById('dropZone');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover')});
-dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');handleFiles(e.dataTransfer.files)});
-
-// ─── Download ───
-function downloadFile(){
-  const html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
-  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='adidas-social-playbook.html';
+function dl(){
+  const h='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  const b=new Blob([h],{type:'text/html;charset=utf-8'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');
+  a.href=u;a.download='adidas-social-playbook.html';
   document.body.appendChild(a);a.click();document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  st('⬇ 已下载');
-}
+  URL.revokeObjectURL(u);st('⬇ 已下载');}
 
-function st(m){T.textContent=m;T.classList.add('show');if(tm)clearTimeout(tm);tm=setTimeout(()=>T.classList.remove('show'),2200)}
-function stt(m){T.textContent=m;T.classList.add('show');if(tm)clearTimeout(tm);tm=setTimeout(()=>T.classList.remove('show'),3000)}
-window.showTOC=()=>document.getElementById('tocOverlay').classList.add('show');
-window.ht=()=>document.getElementById('tocOverlay').classList.remove('show');
-window.hu=()=>{document.getElementById('uploadOverlay').classList.remove('show')};
-window.logoutVerify=lg;
-window.doVerify=doVerify;
-window.handleEditClick=hEC;
+function st(m){TT.textContent=m;TT.classList.add('show');if(ttm)clearTimeout(ttm);ttm=setTimeout(()=>TT.classList.remove('show'),2000)}
+window.st=()=>document.getElementById('tocO').classList.add('show');
+window.ht=()=>document.getElementById('tocO').classList.remove('show');
+window.logoutVerify=vl;window.doVerify=vd;window.handleEditClick=he;
 
-function saveContent(){const d={};document.querySelectorAll('.editable').forEach((el,i)=>{d['e_'+i]=el.innerHTML});localStorage.setItem('adidas_pb',JSON.stringify(d))}
-setInterval(()=>{if(em)saveContent()},30000);
-window.addEventListener('beforeunload',()=>{if(em)saveContent()});
+function svC(){const d={};document.querySelectorAll('.editable').forEach((el,i)=>{d['e_'+i]=el.innerHTML});localStorage.setItem('adidas_pb',JSON.stringify(d))}
+setInterval(()=>{if(em)svC()},30000);window.addEventListener('beforeunload',()=>{if(em)svC()});
 try{const s=localStorage.getItem('adidas_pb');if(s){const d=JSON.parse(s);document.querySelectorAll('.editable').forEach((el,i)=>{const k='e_'+i;if(d[k])el.innerHTML=d[k]})}}catch(e){}
 
-// Auto-show logout if already verified
-document.addEventListener('DOMContentLoaded',()=>{
-  if(localStorage.getItem('adidas_verified')==='true'){
-    document.getElementById('verifyLogout').style.display='block';
-  }
-});
+document.addEventListener('DOMContentLoaded',()=>{if(localStorage.getItem('adidas_verified')==='true')document.getElementById('vOut').style.display='block'});
 ckV();
 </script>
 </body>
