@@ -401,6 +401,15 @@
       .bar-btn{height:clamp(24px,5vmin,30px);padding:0 clamp(5px,1vmin,9px);font-size:clamp(.45rem,1.1vmin,.55rem)}
       .badge-auth{display:none}
     }
+    @media(min-width:768px){
+      .slide{max-width:min(540px,36vw);max-height:min(960px,88vh)}
+    }
+    @media(min-width:1200px){
+      .slide{max-width:min(600px,30vw);max-height:min(1067px,90vh)}
+    }
+    @media(min-width:1600px){
+      .slide{max-width:min(660px,26vw);max-height:min(1173px,90vh)}
+    }
     @media(max-height:500px){
       .slide{width:70vmin;height:calc(70vmin*16/9);max-height:88vh}
       .card{padding:clamp(.18rem,.4vmin,.3rem) clamp(.2rem,.5vmin,.35rem);margin-bottom:clamp(.1rem,.2vmin,.15rem)}
